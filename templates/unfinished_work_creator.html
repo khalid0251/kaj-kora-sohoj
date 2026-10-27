@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>উন্নয়নমূলক/জনস্বার্থ সংশ্লিষ্ট অসমাপ্ত কাজ সমাপ্ত করার জন্য আবেদন</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      height: 60px;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      z-index: 10;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .nav-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-title .pipe {
+      color: #ff9800;
+      font-weight: 800;
+    }
+
+    /* ==================== SPLIT-SCREEN LAYOUT ==================== */
+    .split-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* 1. LEFT PANEL (INPUT FORM) */
+    .left-panel {
+      width: 470px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .panel-header i {
+      color: #ff9800;
+    }
+
+    .form-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .form-section-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #0f766e;
+      background: #f0fdfa;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-top: 18px;
+      margin-bottom: 12px;
+      border-left: 3px solid #0f766e;
+    }
+
+    .form-section-title:first-child {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: #ff9800;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .panel-footer {
+      padding: 16px 20px;
+      background: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-submit-print {
+      flex: 1;
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14.5px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-submit-print:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reset {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* 2. RIGHT PANEL (LIVE A4 PREVIEW) */
+    .right-panel {
+      flex: 1;
+      background: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 30px;
+      align-items: center;
+    }
+
+    /* Standard A4 Paper Container */
+    .a4-container {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 25mm 22mm;
+      margin: 0 auto;
+      border-radius: 2px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Editable Chips / Highlight Styling */
+    .highlight {
+      background-color: #dcfce7;
+      color: #166534;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      display: inline-block;
+      border-bottom: 1px dashed #22c55e;
+      transition: all 0.15s ease-in-out;
+    }
+
+    /* ==================== PRINT STYLES ==================== */
+    @media print {
+      body {
+        background: #ffffff !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .top-navbar,
+      .left-panel {
+        display: none !important;
+      }
+
+      .split-container {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .right-panel {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-container {
+        width: 100% !important;
+        max-width: 210mm !important;
+        min-height: 297mm !important;
+        box-shadow: none !important;
+        padding: 20mm 18mm !important;
+        margin: 0 auto !important;
+        border-radius: 0 !important;
+      }
+
+      .highlight {
+        background-color: transparent !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #000000 !important;
+      }
+    }
+
+    @media (max-width: 992px) {
+      body {
+        overflow: auto;
+      }
+      .split-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .left-panel {
+        width: 100%;
+        height: auto;
+      }
+      .right-panel {
+        padding: 16px 8px;
+      }
+      .a4-container {
+        width: 100%;
+        min-height: auto;
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="nav-left">
+      <a href="{{ url_for('manual_documents') }}" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>ডকুমেন্ট তালিকা</span>
+      </a>
+      <div class="nav-title">
+        <span class="pipe">|</span>
+        <span>উন্নয়নমূলক/জনস্বার্থ সংশ্লিষ্ট অসমাপ্ত কাজ সমাপ্ত করার জন্য আবেদন</span>
+      </div>
+    </div>
+    <div>
+      <button type="button" class="btn-submit-print" onclick="window.print()">
+        <i class="fa-solid fa-print"></i>
+        <span>প্রিন্ট করুন</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Split Screen Workspace -->
+  <main class="split-container">
+
+    <!-- 1. LEFT PANEL: INPUT FORM (33 Fields organized in clear sections) -->
+    <aside class="left-panel">
+      <div class="panel-header">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>তথ্য পূরণ ফরম (৩৩ টি ফিল্ড)</span>
+      </div>
+
+      <div class="form-scroll-area">
+        
+        <!-- ১. প্রাপক ও দপ্তরের তথ্য -->
+        <div class="form-section-title">১. প্রাপক ও দপ্তরের তথ্য</div>
+
+        <div class="form-group">
+          <label for="field_recipient_designation">প্রাপকের পদবি</label>
+          <input type="text" id="field_recipient_designation" class="form-control" value="উপজেলা নির্বাহী অফিসার" placeholder="উদাঃ উপজেলা নির্বাহী অফিসার">
+        </div>
+
+        <div class="form-group">
+          <label for="field_office_name">দপ্তর / অফিসের নাম</label>
+          <input type="text" id="field_office_name" class="form-control" value="উপজেলা প্রশাসন" placeholder="উদাঃ উপজেলা প্রশাসন">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_office_upazila">দপ্তরের উপজেলা</label>
+            <input type="text" id="field_office_upazila" class="form-control" value="বগুড়া সদর" placeholder="উদাঃ বগুড়া সদর">
+          </div>
+          <div class="form-group">
+            <label for="field_office_district">দপ্তরের জেলা</label>
+            <input type="text" id="field_office_district" class="form-control" value="বগুড়া" placeholder="উদাঃ বগুড়া">
+          </div>
+        </div>
+
+        <!-- ২. বাদীর বিবরণ -->
+        <div class="form-section-title">২. বাদীর বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_badi_name">বাদীর নাম *</label>
+          <input type="text" id="field_badi_name" class="form-control" value="আবদুল্লাহ আল মামুন" placeholder="উদাঃ আবদুল্লাহ আল মামুন">
+        </div>
+
+        <div class="form-group">
+          <label for="field_badi_father">বাদীর পিতার নাম</label>
+          <input type="text" id="field_badi_father" class="form-control" value="মোহাম্মদ সেলিম" placeholder="উদাঃ মোহাম্মদ সেলিম">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_badi_village">সাং / গ্রাম</label>
+            <input type="text" id="field_badi_village" class="form-control" value="পূর্বপাড়া" placeholder="উদাঃ পূর্বপাড়া">
+          </div>
+          <div class="form-group">
+            <label for="field_badi_ward">ওয়ার্ড নং</label>
+            <input type="text" id="field_badi_ward" class="form-control" value="০৫" placeholder="উদাঃ ০৫">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_badi_union">ইউনিয়ন</label>
+            <input type="text" id="field_badi_union" class="form-control" value="মাধবপুর" placeholder="উদাঃ মাধবপুর">
+          </div>
+          <div class="form-group">
+            <label for="field_badi_upazila">উপজেলা</label>
+            <input type="text" id="field_badi_upazila" class="form-control" value="বগুড়া সদর" placeholder="উদাঃ বগুড়া সদর">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="field_badi_district">জেলা</label>
+          <input type="text" id="field_badi_district" class="form-control" value="বগুড়া" placeholder="উদাঃ বগুড়া">
+        </div>
+
+        <!-- ৩. বিবাদীর বিবরণ -->
+        <div class="form-section-title">৩. বিবাদীর বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_bibadi_name">বিবাদীর নাম *</label>
+          <input type="text" id="field_bibadi_name" class="form-control" value="মোঃ জাহাঙ্গীর আলম" placeholder="উদাঃ মোঃ জাহাঙ্গীর আলম">
+        </div>
+
+        <div class="form-group">
+          <label for="field_bibadi_father">বিবাদীর পিতার নাম</label>
+          <input type="text" id="field_bibadi_father" class="form-control" value="মোঃ আব্দুল আজিজ" placeholder="উদাঃ মোঃ আব্দুল আজিজ">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_bibadi_village">সাং / গ্রাম</label>
+            <input type="text" id="field_bibadi_village" class="form-control" value="সোনাপুর" placeholder="উদাঃ সোনাপুর">
+          </div>
+          <div class="form-group">
+            <label for="field_bibadi_ward">ওয়ার্ড নং</label>
+            <input type="text" id="field_bibadi_ward" class="form-control" value="০৩" placeholder="উদাঃ ০৩">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_bibadi_union">ইউনিয়ন</label>
+            <input type="text" id="field_bibadi_union" class="form-control" value="বাগবাড়ী" placeholder="উদাঃ বাগবাড়ী">
+          </div>
+          <div class="form-group">
+            <label for="field_bibadi_upazila">উপজেলা</label>
+            <input type="text" id="field_bibadi_upazila" class="form-control" value="বগুড়া সদর" placeholder="উদাঃ বগুড়া সদর">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="field_bibadi_district">জেলা</label>
+          <input type="text" id="field_bibadi_district" class="form-control" value="বগুড়া" placeholder="উদাঃ বগুড়া">
+        </div>
+
+        <!-- ৪. প্রকল্প ও কাজের বিবরণ -->
+        <div class="form-section-title">৪. প্রকল্প ও কাজের বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_project_name">প্রকল্পের নাম *</label>
+          <input type="text" id="field_project_name" class="form-control" value="গ্রামীণ রাস্তা উন্নয়ন প্রকল্প" placeholder="উদাঃ গ্রামীণ রাস্তা উন্নয়ন প্রকল্প">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_project_area">প্রকল্প এলাকা</label>
+            <input type="text" id="field_project_area" class="form-control" value="বগুড়া সদর" placeholder="উদাঃ বগুড়া সদর">
+          </div>
+          <div class="form-group">
+            <label for="field_work_type">কাজের ধরন</label>
+            <input type="text" id="field_work_type" class="form-control" value="রাস্তা নির্মাণ" placeholder="উদাঃ রাস্তা নির্মাণ">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="field_incomplete_portion">অসমাপ্ত অংশের পরিমাণ</label>
+          <input type="text" id="field_incomplete_portion" class="form-control" value="২০% সম্পন্ন" placeholder="উদাঃ ২০% সম্পন্ন">
+        </div>
+
+        <div class="form-group">
+          <label for="field_public_suffering_1">জনভোগান্তি ১ (বঞ্চিত বিষয়)</label>
+          <input type="text" id="field_public_suffering_1" class="form-control" value="যোগাযোগ ও চলাচল সুবিধা" placeholder="উদাঃ যোগাযোগ ও চলাচল সুবিধা">
+        </div>
+
+        <div class="form-group">
+          <label for="field_public_suffering_2">জনভোগান্তি ২ (ব্যাহত বিষয়)</label>
+          <input type="text" id="field_public_suffering_2" class="form-control" value="স্কুল, কলেজ, হাসপাতাল ও বাজারে যাতায়াত" placeholder="উদাঃ স্কুল, কলেজ, হাসপাতাল ও বাজারে যাতায়াত">
+        </div>
+
+        <!-- ৫. সহযোগী ও সমর্থক ব্যক্তিবর্গ -->
+        <div class="form-section-title">৫. সহযোগী ও সমর্থক ব্যক্তিবর্গ</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_supporter_1">সমর্থক ১</label>
+            <input type="text" id="field_supporter_1" class="form-control" value="রাহিম খান" placeholder="উদাঃ রাহিম খান">
+          </div>
+          <div class="form-group">
+            <label for="field_supporter_2">সমর্থক ২</label>
+            <input type="text" id="field_supporter_2" class="form-control" value="সালেহা বেগম" placeholder="উদাঃ সালেহা বেগম">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_supporter_3">সমর্থক ৩</label>
+            <input type="text" id="field_supporter_3" class="form-control" value="আছির উদ্দিন" placeholder="উদাঃ আছির উদ্দিন">
+          </div>
+          <div class="form-group">
+            <label for="field_supporter_4">সমর্থক ৪</label>
+            <input type="text" id="field_supporter_4" class="form-control" value="মিনারা খাতুন" placeholder="উদাঃ মিনারা খাতুন">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_supporter_5">সমর্থক ৫</label>
+            <input type="text" id="field_supporter_5" class="form-control" value="জাহিদ হাসান" placeholder="উদাঃ জাহিদ হাসান">
+          </div>
+          <div class="form-group">
+            <label for="field_supporting_organization">সহায়তাকারী সংস্থা</label>
+            <input type="text" id="field_supporting_organization" class="form-control" value="গ্রাম উন্নয়ন সংস্থা" placeholder="উদাঃ গ্রাম উন্নয়ন সংস্থা">
+          </div>
+        </div>
+
+        <!-- ৬. আবেদনকারী ও সমাপ্তি -->
+        <div class="form-section-title">৬. আবেদনকারীর পরিচিতি ও তারিখ</div>
+
+        <div class="form-group">
+          <label for="field_applicant_designation">পদবী / পরিচয়</label>
+          <input type="text" id="field_applicant_designation" class="form-control" value="স্থানীয় বাসিন্দা ও আবেদনকারী" placeholder="উদাঃ স্থানীয় বাসিন্দা ও আবেদনকারী">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_applicant_mobile">মোবাইল নম্বর</label>
+            <input type="text" id="field_applicant_mobile" class="form-control" value="০১৭১২৩৪৫৬৭৮" placeholder="উদাঃ ০১৭১২৩৪৫৬৭৮">
+          </div>
+          <div class="form-group">
+            <label for="field_application_date">আবেদনের তারিখ</label>
+            <input type="text" id="field_application_date" class="form-control" value="০৪/০৫/২০২৩" placeholder="উদাঃ ০৪/০৫/২০২৩">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="panel-footer">
+        <button type="button" class="btn-submit-print" id="btnSubmitPrint">
+          <i class="fa-solid fa-print"></i>
+          <span>ডকুমেন্ট প্রিন্ট করুন</span>
+        </button>
+        <button type="button" class="btn-reset" id="btnResetFields" title="রিসেট করুন">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. RIGHT PANEL: LIVE A4 PREVIEW -->
+    <section class="right-panel">
+      <div class="a4-container" id="a4DocumentPaper">
+        
+        <!-- EXACT BENGALI HTML STRUCTURE AS REQUESTED -->
+        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.6; color: #000; font-size: 15px;">
+          <p>বরাবর,<br>
+          <span class="highlight input-recipient_designation">উপজেলা নির্বাহী অফিসার</span><br>
+          <span class="highlight input-office_name">উপজেলা প্রশাসন</span><br>
+          <span class="highlight input-office_upazila">বগুড়া সদর</span>, <span class="highlight input-office_district">বগুড়া</span>।</p>
+          <br>
+          <p>বিষয়ঃ উন্নয়নমূলক/জনস্বার্থ সংশ্লিষ্ট অসমাপ্ত কাজ সমাপ্ত করার জন্য আবেদন।</p>
+          <br>
+          
+          <p><strong>বাদী</strong><br>
+          নামঃ <span class="highlight input-badi_name">আবদুল্লাহ আল মামুন</span> 
+          পিতাঃ <span class="highlight input-badi_father">মোহাম্মদ সেলিম</span> 
+          সাংঃ <span class="highlight input-badi_village">পূর্বপাড়া</span> 
+          ওয়ার্ড নংঃ <span class="highlight input-badi_ward">০৫</span> 
+          ইউনিয়নঃ <span class="highlight input-badi_union">মাধবপুর</span> 
+          উপজেলাঃ <span class="highlight input-badi_upazila">বগুড়া সদর</span> 
+          জেলাঃ <span class="highlight input-badi_district">বগুড়া</span></p>
+          <br>
+
+          <p><strong>বিবাদী</strong><br>
+          নামঃ <span class="highlight input-bibadi_name">মোঃ জাহাঙ্গীর আলম</span> 
+          পিতাঃ <span class="highlight input-bibadi_father">মোঃ আব্দুল আজিজ</span> 
+          সাংঃ <span class="highlight input-bibadi_village">সোনাপুর</span> 
+          ওয়ার্ড নংঃ <span class="highlight input-bibadi_ward">০৩</span> 
+          ইউনিয়নঃ <span class="highlight input-bibadi_union">বাগবাড়ী</span> 
+          উপজেলাঃ <span class="highlight input-bibadi_upazila">বগুড়া সদর</span> 
+          জেলাঃ <span class="highlight input-bibadi_district">বগুড়া</span></p>
+          <br>
+
+          <p>আবেদনের কারণ এই যে,</p>
+          <p style="text-align: justify; line-height: 2.2;">
+            আমরা নিম্নস্বাক্ষরকারীগণ জানাইতেছি যে, <span class="highlight input-project_name">গ্রামীণ রাস্তা উন্নয়ন প্রকল্প</span> প্রকল্পের আওতায় 
+            <span class="highlight input-project_area">বগুড়া সদর</span> এলাকায় <span class="highlight input-work_type">রাস্তা নির্মাণ</span> কার্যক্রম চলমান রহিয়াছে। 
+            উক্ত কাজের অধিকাংশ অংশ সম্পন্ন হইলেও এখনো প্রায় <span class="highlight input-incomplete_portion">২০% সম্পন্ন</span> অংশ অসমাপ্ত রহিয়াছে। 
+            কিন্তু বিবাদী <span class="highlight input-bibadi_name">মোঃ জাহাঙ্গীর আলম</span> উক্ত কাজ সম্পাদনে বিভিন্ন প্রকার বাধা প্রদান করিয়া আসিতেছেন। 
+            ফলে জনসাধারণ <span class="highlight input-public_suffering_1">যোগাযোগ ও চলাচল সুবিধা</span> হইতে বঞ্চিত হইতেছে এবং স্বাভাবিক জীবনযাত্রায় চরম ভোগান্তির সম্মুখীন হইতেছে। 
+            বিশেষভাবে <span class="highlight input-public_suffering_2">স্কুল, কলেজ, হাসপাতাল ও বাজারে যাতায়াত</span> ব্যাহত হওয়ায় এলাকার জনগণ মারাত্মক দুর্ভোগের মধ্যে রহিয়াছে।
+          </p>
+          <p style="text-align: justify; line-height: 2.2; margin-top: 15px;">
+            উক্ত উন্নয়নমূলক কার্যক্রম বাস্তবায়নের স্বার্থে এলাকার জনগণ, যথা- 
+            <span class="highlight input-supporter_1">রাহিম খান</span>, <span class="highlight input-supporter_2">সালেহা বেগম</span>, 
+            <span class="highlight input-supporter_3">আছির উদ্দিন</span>, <span class="highlight input-supporter_4">মিনারা খাতুন</span>, 
+            <span class="highlight input-supporter_5">জাহিদ হাসান</span> এবং <span class="highlight input-supporting_organization">গ্রাম উন্নয়ন সংস্থা</span> 
+            স্বতঃস্ফূর্তভাবে সহযোগিতা প্রদান করিয়াছেন। তথাপি বিবাদীর বাধার কারণে উক্ত কাজ সম্পন্ন করা সম্ভব হইতেছে না। এমতাবস্থায়, আমরা নিরুপায় হইয়া আপনার শরণাপন্ন হইলাম।
+          </p>
+          <p style="text-align: justify; line-height: 2.2; margin-top: 15px;">
+            অতএব, মহোদয়ের নিকট বিনীত প্রার্থনা এই যে, বিষয়টি সরেজমিনে তদন্তপূর্বক প্রয়োজনীয় আইনানুগ ব্যবস্থা গ্রহণ করিয়া উক্ত অসমাপ্ত 
+            <span class="highlight input-project_name">গ্রামীণ রাস্তা উন্নয়ন প্রকল্প</span> দ্রুত সম্পন্ন করিবার ব্যবস্থা গ্রহণ করিয়া বাধিত করিবেন।
+          </p>
+          
+          <div style="margin-top: 40px; line-height: 1.8;">
+            <p>নিবেদক</p>
+            <p>নামঃ <span class="highlight input-badi_name">আবদুল্লাহ আল মামুন</span></p>
+            <p>পদবী/পরিচয়ঃ <span class="highlight input-applicant_designation">স্থানীয় বাসিন্দা ও আবেদনকারী</span></p>
+            <p>মোবাইলঃ <span class="highlight input-applicant_mobile">০১৭১২৩৪৫৬৭৮</span></p>
+            <p>তারিখঃ <span class="highlight input-application_date">০৪/০৫/২০২৩</span> ইং</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. VANILLA JAVASCRIPT: INSTANT MULTI-ELEMENT SYNC -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // All 33 Form Fields
+      const fieldIds = [
+        'recipient_designation', 'office_name', 'office_upazila', 'office_district',
+        'badi_name', 'badi_father', 'badi_village', 'badi_ward', 'badi_union', 'badi_upazila', 'badi_district',
+        'bibadi_name', 'bibadi_father', 'bibadi_village', 'bibadi_ward', 'bibadi_union', 'bibadi_upazila', 'bibadi_district',
+        'project_name', 'project_area', 'work_type', 'incomplete_portion', 'public_suffering_1', 'public_suffering_2',
+        'supporter_1', 'supporter_2', 'supporter_3', 'supporter_4', 'supporter_5', 'supporting_organization',
+        'applicant_designation', 'applicant_mobile', 'application_date'
+      ];
+
+      // Store initial default values for reset
+      const defaultValues = {};
+
+      fieldIds.forEach(id => {
+        const inputElem = document.getElementById('field_' + id);
+        // querySelectorAll finds ALL matching spans (e.g. .input-badi_name, .input-bibadi_name, .input-project_name)
+        const targetSpans = document.querySelectorAll('.input-' + id);
+
+        if (inputElem && targetSpans.length > 0) {
+          defaultValues[id] = inputElem.value;
+
+          // Function to sync input value to ALL corresponding spans simultaneously
+          const syncField = function () {
+            const val = inputElem.value.trim();
+            targetSpans.forEach(span => {
+              if (val) {
+                span.textContent = val;
+              } else {
+                // Fallback indicator when input is cleared
+                span.textContent = '[' + (inputElem.placeholder || id) + ']';
+              }
+            });
+          };
+
+          // Attach live event listeners (input, keyup, change)
+          inputElem.addEventListener('input', syncField);
+          inputElem.addEventListener('keyup', syncField);
+          inputElem.addEventListener('change', syncField);
+        }
+      });
+
+      // Submit / Print Button
+      const btnPrint = document.getElementById('btnSubmitPrint');
+      if (btnPrint) {
+        btnPrint.addEventListener('click', function () {
+          window.print();
+        });
+      }
+
+      // Reset Button: Restores initial pre-filled values
+      const btnReset = document.getElementById('btnResetFields');
+      if (btnReset) {
+        btnReset.addEventListener('click', function () {
+          fieldIds.forEach(id => {
+            const inputElem = document.getElementById('field_' + id);
+            const targetSpans = document.querySelectorAll('.input-' + id);
+            if (inputElem && targetSpans.length > 0 && defaultValues[id] !== undefined) {
+              inputElem.value = defaultValues[id];
+              targetSpans.forEach(span => {
+                span.textContent = defaultValues[id];
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

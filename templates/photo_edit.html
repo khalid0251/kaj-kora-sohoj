@@ -1,0 +1,2921 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>প্রফেশনাল ফটো স্টুডিও - কাজ করা সহজ</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Custom Studio & Brand CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <!-- Cropper.js CSS CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+
+  <style>
+    /* Studio Photo Preview Box */
+    .studio-photo-box {
+      max-width: 380px !important;
+      width: 100% !important;
+      margin: 0 auto;
+      background: #ffffff;
+      padding: 6px;
+      border-radius: 12px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.7);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .canvas-result-img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 472 / 591;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+      background-color: #f1f5f9;
+    }
+
+    .canvas-watermark-tag {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 22, 29, 0.85);
+      backdrop-filter: blur(4px);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Cropper.js Interactive AI Cropping UI */
+    .cropper-stage {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .ai-crop-banner {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(19, 94, 125, 0.28);
+      border: 1px solid rgba(6, 182, 212, 0.45);
+      backdrop-filter: blur(8px);
+      padding: 8px 14px;
+      border-radius: 10px;
+    }
+
+    .ai-badge-pulse {
+      background: linear-gradient(135deg, #06b6d4, #0284c7);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cropper-quick-controls .btn {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    .cropper-quick-controls .btn:hover {
+      background: rgba(6, 182, 212, 0.25);
+      border-color: #06b6d4;
+      color: #06b6d4 !important;
+    }
+
+    .cropper-box-wrapper {
+      max-width: 520px;
+      width: 100%;
+      max-height: 480px;
+      min-height: 320px;
+      background: #081016;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cropper-box-wrapper img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Custom Cropper.js Dark Studio Styling */
+    .cropper-view-box {
+      outline: 2px solid #06b6d4 !important;
+      outline-color: #06b6d4 !important;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.55);
+      border-radius: 4px;
+    }
+    .cropper-line {
+      background-color: #06b6d4 !important;
+      opacity: 0.6;
+    }
+    .cropper-point {
+      background-color: #06b6d4 !important;
+      width: 10px !important;
+      height: 10px !important;
+      border-radius: 50% !important;
+      opacity: 0.95;
+    }
+    .cropper-point.point-se {
+      width: 14px !important;
+      height: 14px !important;
+      background-color: #38bdf8 !important;
+    }
+    .cropper-dashed {
+      border-color: rgba(255, 255, 255, 0.45) !important;
+    }
+    .cropper-modal {
+      background-color: rgba(7, 14, 20, 0.82) !important;
+    }
+
+    /* =========================================================================
+       PRINT MODAL & A4 CANVAS STYLES
+       ========================================================================= */
+    .print-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 9, 13, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1060;
+    }
+
+    .print-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1070;
+      display: flex;
+      flex-direction: column;
+      background: #091319;
+      color: #f1f5f9;
+      overflow: hidden;
+    }
+
+    .print-modal-header {
+      background: #0b1a23;
+      border-bottom: 1px solid rgba(6, 182, 212, 0.25);
+      padding: 12px 24px;
+      flex-shrink: 0;
+    }
+
+    .print-logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: rgba(19, 94, 125, 0.35);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .print-modal-body {
+      flex: 1;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* Left Sidebar */
+    .print-modal-sidebar {
+      width: 360px;
+      min-width: 320px;
+      max-width: 380px;
+      background: #0c1821;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .print-control-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 16px;
+    }
+
+    .control-section-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #e2e8f0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Recent Photos Gallery */
+    .recent-photos-grid {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 8px 2px;
+    }
+    .recent-photo-thumb-wrap {
+      position: relative;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .recent-photo-thumb {
+      width: 52px;
+      height: 65px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      transition: all 0.2s ease;
+      background: #ffffff;
+      display: block;
+    }
+    .recent-photo-thumb-wrap.active .recent-photo-thumb {
+      border-color: #06b6d4;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.7);
+      transform: scale(1.04);
+    }
+    .recent-photo-thumb-wrap .thumb-active-check {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+      background: #06b6d4;
+      color: #ffffff;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      border: 2px solid #0c1821;
+    }
+    .recent-photo-thumb-wrap.active .thumb-active-check {
+      display: flex;
+    }
+
+    /* Size Group Cards */
+    .size-group-card {
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .size-group-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f1f5f9;
+    }
+    .size-group-sub {
+      font-size: 11px;
+      color: #94a3b8;
+    }
+
+    .quick-add-btn {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 8px;
+    }
+
+    .grid-r-sizes {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .custom-check-label {
+      font-size: 13px;
+      color: #cbd5e1;
+      cursor: pointer;
+    }
+    .custom-check-label .form-check-input {
+      cursor: pointer;
+      background-color: #0f172a;
+      border-color: #475569;
+    }
+    .custom-check-label .form-check-input:checked {
+      background-color: #06b6d4;
+      border-color: #06b6d4;
+    }
+
+    .custom-teal-range::-webkit-slider-thumb {
+      background: #06b6d4;
+    }
+    .custom-teal-range::-moz-range-thumb {
+      background: #06b6d4;
+    }
+
+    /* RIGHT MAIN AREA (A4 Paper Viewport) */
+    .print-modal-main {
+      flex: 1;
+      background: #060e14;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .print-zoom-toolbar {
+      background: rgba(11, 22, 29, 0.7);
+      backdrop-filter: blur(6px);
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 6px 14px;
+      flex-shrink: 0;
+    }
+
+    .a4-sheet-scroll-container {
+      flex: 1;
+      overflow: auto;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: radial-gradient(circle at center, #0f1c24 0%, #060e14 100%);
+    }
+
+    .a4-sheet-wrapper {
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+      box-shadow: 0 16px 50px rgba(0, 0, 0, 0.8);
+      border-radius: 2px;
+    }
+
+    /* A4 Physical Dimensions (210mm x 297mm) */
+    .a4-sheet {
+      width: 210mm;
+      height: 297mm;
+      min-height: 297mm;
+      max-height: 297mm;
+      background: #ffffff;
+      padding: 8mm;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: var(--print-gap, 3mm);
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Physical Photo Wrapper on A4 Sheet (Exact Physical Dimensions) */
+    .print-photo-wrapper,
+    .print-photo-item {
+      position: relative;
+      background-color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 0.5px solid transparent;
+      transition: padding 0.15s ease, border-color 0.15s ease;
+    }
+
+    /* Inner <img> tag strictly fills wrapper while respecting padding */
+    .print-photo-wrapper .print-photo-img,
+    .print-photo-item .print-photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      box-sizing: border-box;
+    }
+
+    /* Exact physical size classes */
+    .print-photo-wrapper[data-size="passport"],
+    .print-photo-item[data-size="passport"] {
+      width: 40mm;
+      height: 50mm;
+    }
+    .print-photo-wrapper[data-size="stamp"],
+    .print-photo-item[data-size="stamp"] {
+      width: 20mm;
+      height: 25mm;
+    }
+    .print-photo-wrapper[data-size="2r"],
+    .print-photo-item[data-size="2r"] {
+      width: 63.5mm;
+      height: 88.9mm;
+    }
+    .print-photo-wrapper[data-size="3r"],
+    .print-photo-item[data-size="3r"] {
+      width: 88.9mm;
+      height: 127mm;
+    }
+    .print-photo-wrapper[data-size="4r"],
+    .print-photo-item[data-size="4r"] {
+      width: 101.6mm;
+      height: 152.4mm;
+    }
+
+    /* Photo Border: creates white gap between photo background and outer cut edge */
+    .print-photo-wrapper.has-photo-border,
+    .print-photo-item.has-photo-border {
+      padding: 1.5mm;
+      background-color: #ffffff;
+    }
+
+    /* Cutting Border: very subtle, light gray stroke for scissor guidance */
+    .print-photo-wrapper.has-cutting-border,
+    .print-photo-item.has-cutting-border {
+      border: 0.5px solid #cbd5e1;
+    }
+
+    /* On-Screen Delete Button & Size Tag */
+    .print-photo-delete-btn {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 22px;
+      height: 22px;
+      background: rgba(220, 38, 38, 0.9);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      font-size: 11px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+      transition: all 0.15s ease;
+    }
+    .print-photo-wrapper:hover .print-photo-delete-btn,
+    .print-photo-item:hover .print-photo-delete-btn {
+      display: flex;
+    }
+    .print-photo-delete-btn:hover {
+      background: #b91c1c;
+      transform: scale(1.15);
+    }
+
+    .print-photo-tag {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: #ffffff;
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      pointer-events: none;
+      white-space: nowrap;
+      display: none;
+    }
+    .print-photo-wrapper:hover .print-photo-tag,
+    .print-photo-item:hover .print-photo-tag {
+      display: block;
+    }
+
+    /* =========================================================================
+       RECENT EDITED PHOTOS (সাম্প্রতিক এডিট করা ছবি) SECTION
+       ========================================================================= */
+    .recent-gallery-container {
+      background: #0b1a23;
+      border: 1px solid rgba(6, 182, 212, 0.22);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .recent-gallery-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .recent-gallery-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      letter-spacing: 0.3px;
+      margin: 0;
+    }
+
+    .recent-gallery-pipe {
+      color: #FF9800;
+      font-weight: 900;
+      font-size: 18px;
+      margin-right: 8px;
+      line-height: 1;
+    }
+
+    .recent-gallery-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .recent-nav-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #11222c;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f1f5f9;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .recent-nav-btn:hover {
+      background: #135E7D;
+      border-color: #06B6D4;
+      color: #ffffff;
+    }
+
+    .btn-orange-action {
+      background: #FF9800;
+      color: #ffffff;
+      border: none;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-orange-action:hover {
+      background: #f57c00;
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(255, 152, 0, 0.4);
+    }
+
+    .recent-gear-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .recent-gear-btn:hover {
+      color: #f1f5f9;
+      background: #334155;
+    }
+
+    /* Horizontal Scroll Slider */
+    .recent-gallery-slider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 4px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
+      user-select: none;
+    }
+    .recent-gallery-slider::-webkit-scrollbar {
+      display: none; /* Chrome, Safari, Opera */
+    }
+
+    /* Photo Thumbnail Card */
+    .recent-photo-card {
+      flex-shrink: 0;
+      width: 72px;
+      height: 90px;
+      aspect-ratio: 4 / 5;
+      border-radius: 5px;
+      overflow: hidden;
+      background: #0f1c24;
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .recent-photo-card:hover {
+      transform: translateY(-3px) scale(1.05);
+      border-color: #06B6D4;
+      box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);
+    }
+    .recent-photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .recent-photo-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(19, 94, 125, 0.4);
+      opacity: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 16px;
+      transition: opacity 0.2s ease;
+    }
+    .recent-photo-card:hover .recent-photo-overlay {
+      opacity: 1;
+    }
+
+    /* =========================================================================
+       PRINT MEDIA QUERY (@media print)
+       Strict CSS to print ONLY the A4 canvas at 100% exact physical size
+       ========================================================================= */
+    @page {
+      size: A4 portrait;
+      margin: 0mm;
+    }
+
+    @media print {
+      html, body {
+        width: 210mm !important;
+        height: 297mm !important;
+        margin: 0mm !important;
+        padding: 0mm !important;
+        background: #ffffff !important;
+        overflow: hidden !important;
+      }
+
+      /* Hide everything on the page except the A4 print sheet */
+      body * {
+        visibility: hidden !important;
+      }
+
+      #a4SheetWrapper {
+        transform: none !important;
+        box-shadow: none !important;
+      }
+
+      #a4PrintSheet,
+      #a4PrintSheet * {
+        visibility: visible !important;
+      }
+
+      #a4PrintSheet {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 210mm !important;
+        height: 297mm !important;
+        min-height: 297mm !important;
+        max-height: 297mm !important;
+        margin: 0mm !important;
+        padding: 8mm !important;
+        border: none !important;
+        box-shadow: none !important;
+        background: #ffffff !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        align-content: flex-start !important;
+        gap: var(--print-gap, 3mm) !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      .print-photo-wrapper,
+      .print-photo-item {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-sizing: border-box !important;
+      }
+
+      .print-photo-wrapper.has-photo-border,
+      .print-photo-item.has-photo-border {
+        padding: 1.5mm !important;
+        background-color: #ffffff !important;
+      }
+
+      .print-photo-wrapper.has-cutting-border,
+      .print-photo-item.has-cutting-border {
+        border: 0.5px solid #cbd5e1 !important;
+      }
+
+      .print-photo-delete-btn,
+      .print-photo-tag {
+        display: none !important;
+        visibility: hidden !important;
+      }
+    }
+
+    /* =========================================================================
+       WORKSPACE HORIZONTAL SCROLLBAR & 3-COLUMN SQUISHING PREVENTION
+       ========================================================================= */
+    .main-wrapper {
+      margin-left: var(--sidebar-width);
+      flex-grow: 1;
+      min-width: 0;
+      max-width: calc(100vw - var(--sidebar-width));
+      width: calc(100% - var(--sidebar-width));
+      min-height: 100vh;
+      overflow-x: auto !important;
+      overflow-y: visible;
+
+      /* Standard CSS Scrollbar Styling */
+      --scrollbar-thumb: #135E7D;
+      --scrollbar-track: #07151D;
+      scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+      scrollbar-width: thin;
+    }
+
+    /* Custom Modern Dark Studio WebKit Scrollbar */
+    .main-wrapper::-webkit-scrollbar,
+    .studio-workspace::-webkit-scrollbar {
+      height: 8px; /* Slim modern horizontal scrollbar */
+      width: 8px;
+    }
+
+    .main-wrapper::-webkit-scrollbar-track,
+    .studio-workspace::-webkit-scrollbar-track {
+      background: #07151D;
+      border-radius: 4px;
+    }
+
+    .main-wrapper::-webkit-scrollbar-thumb,
+    .studio-workspace::-webkit-scrollbar-thumb {
+      background: #135E7D;
+      border-radius: 4px;
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .main-wrapper::-webkit-scrollbar-thumb:hover,
+    .studio-workspace::-webkit-scrollbar-thumb:hover {
+      background: #06B6D4;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px rgba(6, 182, 212, 0.55);
+    }
+
+    .main-wrapper::-webkit-scrollbar-corner,
+    .studio-workspace::-webkit-scrollbar-corner {
+      background: #07151D;
+    }
+
+    /* Prevent Topbar Background Cut-Off When Scrolled */
+    .topbar {
+      min-width: 1200px;
+      width: 100%;
+    }
+
+    /* Safe Minimum Width Container to Prevent 3-Column Squishing */
+    .studio-workspace-container {
+      min-width: 1200px;
+      width: 100%;
+    }
+
+    .studio-columns-row {
+      min-width: 1200px;
+      flex-wrap: nowrap !important; /* Keep columns strictly side-by-side */
+    }
+
+    /* Strict 3-Column Proportions */
+    .studio-col-settings {
+      flex: 0 0 340px !important;
+      width: 340px !important;
+      min-width: 320px !important;
+      max-width: 380px !important;
+    }
+
+    .studio-col-canvas {
+      flex: 1 1 540px !important;
+      min-width: 520px !important;
+    }
+
+    .studio-col-info {
+      flex: 0 0 310px !important;
+      width: 310px !important;
+      min-width: 300px !important;
+      max-width: 350px !important;
+    }
+
+    /* Ensure QR Card and Guidelines Never Squeeze Internally */
+    .mobile-upload-card,
+    .guidelines-card {
+      min-width: 260px;
+    }
+
+    .qr-code-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 991.98px) {
+      .main-wrapper {
+        margin-left: 0;
+        max-width: 100vw;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="studio-body">
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-wrapper">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="{{ url_for('dashboard') }}" class="brand-logo-card" title="কাজ করা সহজ - হোম">
+          <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="কাজ করা সহজ লোগো" class="sidebar-logo">
+        </a>
+      </div>
+
+      <div class="sidebar-menu-wrapper">
+        <div class="menu-category-title">মূল মেনু</div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="{{ url_for('dashboard') }}" class="nav-link-custom">
+              <i class="bi bi-grid-1x2-fill"></i>
+              <span>ড্যাশবোর্ড</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('photo_edit') }}" class="nav-link-custom active">
+              <i class="bi bi-camera-fill"></i>
+              <span>ফটো এডিটিং</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-ui-checks"></i>
+              <span>অটো ফর্ম</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-file-earmark-richtext"></i>
+              <span>ডকুমেন্ট মেকার</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-cloud-arrow-up"></i>
+              <span>ফাইল শেয়ার</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-gear"></i>
+              <span>সেটিংস</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="step-indicator">
+          <div class="status-dot"></div>
+          <div class="step-info">
+            <small>মডিউল ভার্সন</small>
+            <span>স্মার্ট স্টুডিও ২.০</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+    <div class="main-wrapper">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-toggle" id="sidebarToggle" aria-label="মেনু খুলুন">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="page-title-badge">
+            <i class="bi bi-camera2"></i>
+            <span>স্মার্ট স্টুডিও / পাসপোর্ট ও ভিসা ফটো মেকার</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="system-status-pill">
+            <span></span>
+            ফেস ডিটেকশন সক্রিয়
+          </div>
+
+          <div class="user-profile">
+            <div class="avatar-circle">ক</div>
+            <div class="user-meta d-none d-sm-block">
+              <span>ব্যবহারকারী</span>
+              <small>অ্যাডমিন প্যানেল</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 3-Column Studio Workspace -->
+      <main class="studio-workspace">
+        <div class="container-fluid p-3 p-xl-4 studio-workspace-container">
+          <div class="row g-3 g-xl-4 align-items-stretch studio-columns-row">
+            
+            <!-- ========================================================
+                 LEFT COLUMN: Settings Panel (সেটিংস প্যানেল)
+                 ======================================================== -->
+            <div class="col-12 col-lg-4 col-xl-3 studio-col-settings">
+              <div class="studio-panel settings-panel h-100">
+                <div class="panel-header">
+                  <h5 class="panel-title">
+                    <i class="bi bi-sliders text-teal"></i> স্টুডিও কন্ট্রোল
+                  </h5>
+                  <span class="badge badge-teal-subtle">সেটিংস</span>
+                </div>
+
+                <div class="panel-body">
+                  <!-- Section 1: ছবির মাপ (Photo Size) -->
+                  <div class="settings-section">
+                    <label class="section-label">
+                      <i class="bi bi-aspect-ratio me-1"></i> ১. ছবির মাপ (Photo Size)
+                    </label>
+                    <div class="size-btn-group">
+                      <!-- Passport -->
+                      <button type="button" class="size-btn active" data-size="passport">
+                        <i class="bi bi-person-bounding-box size-icon"></i>
+                        <div class="size-text">
+                          <strong>পাসপোর্ট</strong>
+                          <small>৪০×৫০ মিমি (BD Standard)</small>
+                        </div>
+                        <i class="bi bi-check-circle-fill check-indicator"></i>
+                      </button>
+
+                      <!-- Stamp -->
+                      <button type="button" class="size-btn" data-size="stamp">
+                        <i class="bi bi-card-image size-icon"></i>
+                        <div class="size-text">
+                          <strong>স্ট্যাম্প</strong>
+                          <small>২০×২৫ মিমি (Stamp Size)</small>
+                        </div>
+                        <i class="bi bi-check-circle-fill check-indicator"></i>
+                      </button>
+
+                      <!-- Visa -->
+                      <button type="button" class="size-btn" data-size="visa">
+                        <i class="bi bi-globe size-icon"></i>
+                        <div class="size-text">
+                          <strong>ভিসা</strong>
+                          <small>৫০×৫০ মিমি (২×২ ইঞ্চি)</small>
+                        </div>
+                        <i class="bi bi-check-circle-fill check-indicator"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- Section 2: ব্যাকগ্রাউন্ড (Background Color) -->
+                  <div class="settings-section">
+                    <label class="section-label d-flex justify-content-between align-items-center">
+                      <span><i class="bi bi-palette me-1"></i> ২. ব্যাকগ্রাউন্ড কালার</span>
+                      <small class="text-muted" id="selectedColorCode" style="font-size: 11px;">#FFFFFF</small>
+                    </label>
+                    <div class="color-swatches-container">
+                      <!-- 1. White (#FFFFFF) - Default Active with Orange Border & Checkmark -->
+                      <button type="button" class="swatch-btn active is-light" data-color="#FFFFFF" title="White (সাদা - ডিফল্ট)" style="background-color: #FFFFFF;">
+                        <i class="bi bi-check-lg swatch-check check-dark"></i>
+                      </button>
+
+                      <!-- 2. Light Blue (#3498DB) -->
+                      <button type="button" class="swatch-btn" data-color="#3498DB" title="Light Blue (#3498DB)" style="background-color: #3498DB;">
+                        <i class="bi bi-check-lg swatch-check check-white"></i>
+                      </button>
+
+                      <!-- 3. Cyan (#00C2FF) -->
+                      <button type="button" class="swatch-btn" data-color="#00C2FF" title="Cyan (#00C2FF)" style="background-color: #00C2FF;">
+                        <i class="bi bi-check-lg swatch-check check-white"></i>
+                      </button>
+
+                      <!-- 4. Grey (#9E9E9E) -->
+                      <button type="button" class="swatch-btn" data-color="#9E9E9E" title="Grey (#9E9E9E)" style="background-color: #9E9E9E;">
+                        <i class="bi bi-check-lg swatch-check check-white"></i>
+                      </button>
+
+                      <!-- 5. Royal Blue (#2F65D6) -->
+                      <button type="button" class="swatch-btn" data-color="#2F65D6" title="Royal Blue (#2F65D6)" style="background-color: #2F65D6;">
+                        <i class="bi bi-check-lg swatch-check check-white"></i>
+                      </button>
+
+                      <!-- 6. Teal (Dark Greenish) (#008080) -->
+                      <button type="button" class="swatch-btn" data-color="#008080" title="Teal (#008080)" style="background-color: #008080;">
+                        <i class="bi bi-check-lg swatch-check check-white"></i>
+                      </button>
+
+                      <!-- 7. Cream (Off-white) (#FFF8E7) -->
+                      <button type="button" class="swatch-btn is-light" data-color="#FFF8E7" title="Cream (#FFF8E7)" style="background-color: #FFF8E7;">
+                        <i class="bi bi-check-lg swatch-check check-dark"></i>
+                      </button>
+
+                      <!-- 8. Custom Color Picker -->
+                      <div class="swatch-btn custom-color-btn" id="customColorBtn" title="কাস্টম কালার নির্বাচন করুন" style="background: linear-gradient(135deg, #7C3AED, #4F46E5);">
+                        <i class="bi bi-palette-fill custom-palette-icon text-white" id="customPaletteIcon"></i>
+                        <i class="bi bi-check-lg swatch-check check-white d-none" id="customCheckIcon"></i>
+                        <input type="color" id="nativeColorPicker" value="#7C3AED" class="native-color-input" aria-label="কাস্টম কালার পিকার">
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Section 3: পোশাক স্টাইল (Outfit Style) -->
+                  <div class="settings-section">
+                    <!-- Section Header with Vertical Orange Line, 14/14 Counter & Settings Gear -->
+                    <div class="outfit-section-header d-flex align-items-center justify-content-between mb-2">
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="header-orange-bar"></span>
+                        <span class="extra-section-title">পোশাক স্টাইল</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="char-counter">১৪/১৪</span>
+                        <button type="button" class="gear-btn-box" title="পোশাক সেটিংস">
+                          <i class="bi bi-gear-fill"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- 15 Slots Grid (5 columns x 3 rows) -->
+                    <div class="outfit-grid-container" id="outfitGridContainer">
+                      <div class="outfit-grid-15">
+                        <!-- 1. None / Cancel Icon (Active by default) -->
+                        <div class="outfit-slot active" data-outfit="none" data-name="মূল পোশাক" title="মূল পোশাক (কোনো পোশাক পরিবর্তন নয়)">
+                          <div class="outfit-icon-wrapper">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.2" stroke-linecap="round">
+                              <circle cx="12" cy="12" r="9.5"/>
+                              <line x1="5.5" y1="5.5" x2="18.5" y2="18.5"/>
+                            </svg>
+                            <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                          </div>
+                        </div>
+
+                        <!-- 2. কালো স্যুট -->
+                        <div class="outfit-slot" data-outfit="suit_black" data-name="কালো স্যুট" title="কালো ফরমাল স্যুট">
+                          <img src="/static/outfits/thumbnails/suit_black.svg" alt="কালো স্যুট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 3. নেভি স্যুট -->
+                        <div class="outfit-slot" data-outfit="suit_navy" data-name="নেভি স্যুট" title="নেভি ব্লু স্যুট">
+                          <img src="/static/outfits/thumbnails/suit_navy.svg" alt="নেভি স্যুট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 4. চারকোল স্যুট -->
+                        <div class="outfit-slot" data-outfit="suit_charcoal" data-name="চারকোল স্যুট" title="চারকোল গ্রে স্যুট">
+                          <img src="/static/outfits/thumbnails/suit_charcoal.svg" alt="চারকোল স্যুট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 5. এক্সিকিউটিভ টাক্সিডো -->
+                        <div class="outfit-slot" data-outfit="suit_tuxedo" data-name="টাক্সিডো" title="এক্সিকিউটিভ টাক্সিডো">
+                          <img src="/static/outfits/thumbnails/suit_tuxedo.svg" alt="টাক্সিডো" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 6. সাদা ফরমাল শার্ট -->
+                        <div class="outfit-slot" data-outfit="shirt_white" data-name="সাদা শার্ট" title="সাদা ফরমাল শার্ট">
+                          <img src="/static/outfits/thumbnails/shirt_white.svg" alt="সাদা শার্ট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 7. স্কাই ব্লু শার্ট -->
+                        <div class="outfit-slot" data-outfit="shirt_blue" data-name="নীল শার্ট" title="স্কাই ব্লু ফরমাল শার্ট">
+                          <img src="/static/outfits/thumbnails/shirt_blue.svg" alt="নীল শার্ট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 8. কালো ক্যাজুয়াল শার্ট -->
+                        <div class="outfit-slot" data-outfit="shirt_black" data-name="কালো শার্ট" title="কালো ফরমাল শার্ট">
+                          <img src="/static/outfits/thumbnails/shirt_black.svg" alt="কালো শার্ট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 9. চেক ফরমাল শার্ট -->
+                        <div class="outfit-slot" data-outfit="shirt_check" data-name="চেক শার্ট" title="চেক ফরমাল শার্ট">
+                          <img src="/static/outfits/thumbnails/shirt_check.svg" alt="চেক শার্ট" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 10. সাদা ক্লাসিক পাঞ্জাবি -->
+                        <div class="outfit-slot" data-outfit="panjabi_white" data-name="সাদা পাঞ্জাবি" title="সাদা ক্লাসিক পাঞ্জাবি">
+                          <img src="/static/outfits/thumbnails/panjabi_white.svg" alt="সাদা পাঞ্জাবি" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 11. নেভি এমব্রয়ডারি পাঞ্জাবি -->
+                        <div class="outfit-slot" data-outfit="panjabi_navy" data-name="নেভি পাঞ্জাবি" title="নেভি এমব্রয়ডারি পাঞ্জাবি">
+                          <img src="/static/outfits/thumbnails/panjabi_navy.svg" alt="নেভি পাঞ্জাবি" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 12. মেরুন উৎসব পাঞ্জাবি -->
+                        <div class="outfit-slot" data-outfit="panjabi_maroon" data-name="মেরুন পাঞ্জাবি" title="মেরুন উৎসব পাঞ্জাবি">
+                          <img src="/static/outfits/thumbnails/panjabi_maroon.svg" alt="মেরুন পাঞ্জাবি" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 13. লাল সিল্ক শাড়ি -->
+                        <div class="outfit-slot" data-outfit="saree_red" data-name="লাল শাড়ি" title="লাল সিল্ক শাড়ি">
+                          <img src="/static/outfits/thumbnails/saree_red.svg" alt="লাল শাড়ি" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 14. রয়্যাল ব্লু শাড়ি -->
+                        <div class="outfit-slot" data-outfit="saree_blue" data-name="নীল শাড়ি" title="রয়্যাল ব্লু শাড়ি">
+                          <img src="/static/outfits/thumbnails/saree_blue.svg" alt="নীল শাড়ি" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+
+                        <!-- 15. প্রফেশনাল হিজাব -->
+                        <div class="outfit-slot" data-outfit="hijab_black" data-name="কালো হিজাব" title="প্রফেশনাল হিজাব">
+                          <img src="/static/outfits/thumbnails/hijab_black.svg" alt="কালো হিজাব" class="outfit-thumb-img">
+                          <span class="outfit-slot-badge"><i class="bi bi-check-lg"></i></span>
+                        </div>
+                      </div>
+
+                      <!-- Floating Color Picker Popup for Outfits -->
+                      <div class="outfit-color-popup d-none" id="outfitColorPopup" role="dialog" aria-modal="true">
+                        <div class="popup-header d-flex align-items-center justify-content-between">
+                          <div class="d-flex align-items-center gap-2">
+                            <span class="popup-title-dot"></span>
+                            <h6 class="popup-title mb-0" id="outfitPopupTitle">স্যুট — রঙ বেছে নিন</h6>
+                          </div>
+                          <button type="button" class="popup-close-btn" id="outfitPopupCloseBtn" aria-label="পপআপ বন্ধ করুন">
+                            <i class="bi bi-x-lg"></i>
+                          </button>
+                        </div>
+                        <div class="popup-body">
+                          <div class="outfit-swatches-grid" id="outfitSwatchesGrid">
+                            <!-- 20 Circular Color Swatches -->
+                            <!-- 1. White (with grey border) -->
+                            <button type="button" class="outfit-color-swatch" data-color="#FFFFFF" title="White (#FFFFFF)" style="background-color: #FFFFFF; border: 1px solid #D1D5DB;">
+                              <i class="bi bi-check-lg swatch-check-icon check-dark d-none"></i>
+                            </button>
+                            <!-- 2. Black (Active by default) -->
+                            <button type="button" class="outfit-color-swatch active" data-color="#111827" title="Black (#111827)" style="background-color: #111827;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white"></i>
+                            </button>
+                            <!-- 3. Red -->
+                            <button type="button" class="outfit-color-swatch" data-color="#EF4444" title="Red (#EF4444)" style="background-color: #EF4444;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 4. Blue -->
+                            <button type="button" class="outfit-color-swatch" data-color="#3B82F6" title="Blue (#3B82F6)" style="background-color: #3B82F6;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 5. Green -->
+                            <button type="button" class="outfit-color-swatch" data-color="#10B981" title="Green (#10B981)" style="background-color: #10B981;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 6. Navy -->
+                            <button type="button" class="outfit-color-swatch" data-color="#1E3A8A" title="Navy (#1E3A8A)" style="background-color: #1E3A8A;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 7. Grey -->
+                            <button type="button" class="outfit-color-swatch" data-color="#6B7280" title="Grey (#6B7280)" style="background-color: #6B7280;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 8. Brown -->
+                            <button type="button" class="outfit-color-swatch" data-color="#78350F" title="Brown (#78350F)" style="background-color: #78350F;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 9. Yellow -->
+                            <button type="button" class="outfit-color-swatch" data-color="#EAB308" title="Yellow (#EAB308)" style="background-color: #EAB308;">
+                              <i class="bi bi-check-lg swatch-check-icon check-dark d-none"></i>
+                            </button>
+                            <!-- 10. Pink -->
+                            <button type="button" class="outfit-color-swatch" data-color="#EC4899" title="Pink (#EC4899)" style="background-color: #EC4899;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 11. Purple -->
+                            <button type="button" class="outfit-color-swatch" data-color="#8B5CF6" title="Purple (#8B5CF6)" style="background-color: #8B5CF6;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 12. Orange -->
+                            <button type="button" class="outfit-color-swatch" data-color="#F97316" title="Orange (#F97316)" style="background-color: #F97316;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 13. Maroon -->
+                            <button type="button" class="outfit-color-swatch" data-color="#831843" title="Maroon (#831843)" style="background-color: #831843;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 14. Teal -->
+                            <button type="button" class="outfit-color-swatch" data-color="#14B8A6" title="Teal (#14B8A6)" style="background-color: #14B8A6;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 15. Cyan -->
+                            <button type="button" class="outfit-color-swatch" data-color="#06B6D4" title="Cyan (#06B6D4)" style="background-color: #06B6D4;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 16. Olive -->
+                            <button type="button" class="outfit-color-swatch" data-color="#65A30D" title="Olive (#65A30D)" style="background-color: #65A30D;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 17. Beige -->
+                            <button type="button" class="outfit-color-swatch" data-color="#D7C4A5" title="Beige (#D7C4A5)" style="background-color: #D7C4A5;">
+                              <i class="bi bi-check-lg swatch-check-icon check-dark d-none"></i>
+                            </button>
+                            <!-- 18. Mustard -->
+                            <button type="button" class="outfit-color-swatch" data-color="#D97706" title="Mustard (#D97706)" style="background-color: #D97706;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 19. Magenta -->
+                            <button type="button" class="outfit-color-swatch" data-color="#D946EF" title="Magenta (#D946EF)" style="background-color: #D946EF;">
+                              <i class="bi bi-check-lg swatch-check-icon check-white d-none"></i>
+                            </button>
+                            <!-- 20. Light Cyan -->
+                            <button type="button" class="outfit-color-swatch" data-color="#A5F3FC" title="Light Cyan (#A5F3FC)" style="background-color: #A5F3FC; border: 1px solid #BAE6FD;">
+                              <i class="bi bi-check-lg swatch-check-icon check-dark d-none"></i>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Section 4: অতিরিক্ত নির্দেশনা (Extra Instructions/Options) -->
+                  <div class="settings-section">
+                    <!-- Section Header with Vertical Orange Line & Settings Gear -->
+                    <div class="extra-options-header d-flex align-items-center justify-content-between mb-2">
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="header-orange-bar"></span>
+                        <span class="extra-section-title">অতিরিক্ত নির্দেশনা</span>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="char-counter">১০/২৫</span>
+                        <button type="button" class="gear-btn-box" title="নির্দেশনা সেটিংস">
+                          <i class="bi bi-gear-fill"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- 11 Button Grid Layout -->
+                    <div class="instructions-grid">
+                      <!-- 1. সৌন্দর্য বৃদ্ধি (Active State with Orange '২' Badge) -->
+                      <button type="button" class="instruction-btn active" data-instruction="beauty_enhance" title="সৌন্দর্য বৃদ্ধি">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 3a9 9 0 1 0 9 9 9 9 0 0 0-9-9zM9 10h.01M15 10h.01M9.5 15a3.5 3.5 0 0 0 5 0"/>
+                            <path d="M19 2l.6 1.8L21.4 4.4 19.6 5 19 6.8l-.6-1.8-1.8-.6 1.8-.6z" fill="#FF9800" stroke="#FF9800"/>
+                          </svg>
+                          <span class="badge-num-orange">২</span>
+                        </div>
+                        <span class="label-text">সৌন্দর্য বৃদ্ধি</span>
+                      </button>
+
+                      <!-- 2. ত্বক মসৃণ -->
+                      <button type="button" class="instruction-btn" data-instruction="smooth_skin" title="ত্বক মসৃণ">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 2a8 8 0 0 0-8 8c0 5 8 12 8 12s8-7 8-12a8 8 0 0 0-8-8z"/>
+                            <path d="M12 6a4 4 0 0 0-4 4"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">ত্বক মসৃণ</span>
+                      </button>
+
+                      <!-- 3. তৈলাক্ত ত্বক -->
+                      <button type="button" class="instruction-btn" data-instruction="oily_skin" title="তৈলাক্ত ত্বক">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+                            <circle cx="9" cy="14" r="1.5" fill="currentColor"/>
+                            <circle cx="15" cy="13" r="1" fill="currentColor"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">তৈলাক্ত ত্বক</span>
+                      </button>
+
+                      <!-- 4. ছবি উজ্জ্বল -->
+                      <button type="button" class="instruction-btn" data-instruction="brighten" title="ছবি উজ্জ্বল">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="4"/>
+                            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">ছবি উজ্জ্বল</span>
+                      </button>
+
+                      <!-- 5. স্টুডিও লাইটিং -->
+                      <button type="button" class="instruction-btn" data-instruction="studio_lighting" title="স্টুডিও লাইটিং">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="4" y="3" width="16" height="12" rx="2"/>
+                            <path d="M12 15v6M8 21h8M4 7l4-2M20 7l-4-2M4 11l4 2M20 11l-4 2"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">স্টুডিও লাইটিং</span>
+                      </button>
+
+                      <!-- 6. হাফ বডি -->
+                      <button type="button" class="instruction-btn" data-instruction="half_body" title="হাফ বডি">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="7" r="4"/>
+                            <path d="M5.5 21v-3a5.5 5.5 0 0 1 11 0v3"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">হাফ বডি</span>
+                      </button>
+
+                      <!-- 7. চশমা বাদ -->
+                      <button type="button" class="instruction-btn" data-instruction="remove_glasses" title="চশমা বাদ">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="6" cy="14" r="3.5"/>
+                            <circle cx="18" cy="14" r="3.5"/>
+                            <path d="M9.5 14h5M3 14l2-4M21 14l-2-4M3 3l18 18" stroke="#DC2626"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">চশমা বাদ</span>
+                      </button>
+
+                      <!-- 8. তিল/দাগ রাখা -->
+                      <button type="button" class="instruction-btn" data-instruction="keep_moles" title="তিল/দাগ রাখা">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <circle cx="12" cy="12" r="8"/>
+                            <circle cx="14.5" cy="13.5" r="1.6" fill="currentColor"/>
+                            <circle cx="9" cy="10" r="1" fill="currentColor"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">তিল/দাগ রাখা</span>
+                      </button>
+
+                      <!-- 9. নাক ফুল রাখুন -->
+                      <button type="button" class="instruction-btn" data-instruction="keep_nose_pin" title="নাক ফুল রাখুন">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M12 4v11a3 3 0 0 0 3 3h1"/>
+                            <circle cx="15.5" cy="14" r="2.2" fill="#EAB308" stroke="#CA8A04"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">নাক ফুল রাখুন</span>
+                      </button>
+
+                      <!-- 10. লিপস্টিক -->
+                      <button type="button" class="instruction-btn" data-instruction="lipstick" title="লিপস্টিক">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <rect x="8" y="11" width="8" height="10" rx="1"/>
+                            <path d="M9 11V6.5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2l1.5 4.5" fill="#E11D48"/>
+                            <line x1="8" y1="15" x2="16" y2="15"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">লিপস্টিক</span>
+                      </button>
+
+                      <!-- 11. কাস্টম নির্দেশনা -->
+                      <button type="button" class="instruction-btn" data-instruction="custom" title="কাস্টম নির্দেশনা">
+                        <div class="icon-wrapper">
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                          </svg>
+                        </div>
+                        <span class="label-text">কাস্টম</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bottom Action Button -->
+                <div class="panel-footer">
+                  <button type="button" class="btn btn-primary-teal w-100 py-3 generate-btn" id="generateBtn" disabled>
+                    <span id="generateSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status"></span>
+                    <i class="bi bi-cpu-fill me-2" id="generateIcon"></i>
+                    <span id="generateBtnText">ফটো জেনারেট করুন</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ========================================================
+                 CENTER COLUMN: Main Dark Studio Canvas (মূল ক্যানভাস)
+                 ======================================================== -->
+            <div class="col-12 col-lg-5 col-xl-6 studio-col-canvas">
+              <div class="studio-panel canvas-panel h-100 d-flex flex-column">
+                <div class="canvas-topbar">
+                  <div class="canvas-title">
+                    <i class="bi bi-display me-2 text-teal"></i>
+                    <span>স্টুডিও ভিউপোর্ট ক্যানভাস</span>
+                  </div>
+
+                  <!-- Action Toolbar (Active when image exists) -->
+                  <div class="canvas-actions d-none" id="canvasActionToolbar">
+                    <button type="button" class="btn btn-sm btn-outline-teal d-none" id="recropBtn" title="ক্রপ বক্স পুনরায় সমন্বয় করুন">
+                      <i class="bi bi-crop me-1"></i> ক্রপ পরিবর্তন
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-teal d-none" id="topPrintBtn" title="এ৪ পেপারে একাধিক ছবি সাজিয়ে প্রিন্ট করুন">
+                      <i class="bi bi-printer-fill me-1"></i> ছবি প্রিন্ট
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light d-none" id="compareToggleBtn" title="আগে/পরে তুলনা">
+                      <i class="bi bi-intersect me-1"></i> আগে/পরে
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light" id="canvasResetBtn" title="নতুন ছবি">
+                      <i class="bi bi-arrow-repeat me-1"></i> রিসেট
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Main Dark Canvas Body -->
+                <div class="canvas-body" id="canvasDropZone">
+                  <input type="file" id="studioImageInput" accept="image/jpeg,image/png,image/webp,image/jpg" class="d-none">
+
+                  <!-- Empty State / Upload Zone -->
+                  <div class="canvas-empty-state" id="canvasEmptyState">
+                    <div class="dashed-upload-box">
+                      <div class="upload-pulse-icon">
+                        <i class="bi bi-cloud-arrow-up-fill"></i>
+                      </div>
+                      <h3 class="canvas-upload-title">একটি ছবি আপলোড করুন</h3>
+                      <p class="canvas-upload-desc">
+                        ছবিটি এখানে টেনে এনে ছেড়ে দিন (Drag & Drop) অথবা নিচে ক্লিক করুন
+                      </p>
+                      <button type="button" class="btn btn-primary-teal px-4 py-2" id="canvasBrowseBtn">
+                        <i class="bi bi-folder2-open me-2"></i>ছবি আপলোড করুন
+                      </button>
+                      <div class="canvas-specs-tag mt-3">
+                        <i class="bi bi-shield-check me-1"></i> JPG, PNG, WEBP (সর্বোচ্চ ১৬ এমবি)
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Canvas Display Area (Static Studio Photo Preview) -->
+                  <div class="canvas-display-state d-none" id="canvasDisplayState">
+                    <div class="canvas-stage-wrapper">
+                      <!-- AI Cropper Interactive Stage -->
+                      <div class="cropper-stage" id="cropperStage">
+                        <div class="ai-crop-banner mb-3" id="aiCropHintBanner">
+                          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div class="d-flex align-items-center gap-2">
+                              <span class="ai-badge-pulse"><i class="bi bi-magic"></i> AI স্মার্ট ক্রপ</span>
+                              <span class="small text-white" id="aiCropStatusText">AI ফেস বাউন্ডারি ও হেডরুম নির্ধারণ করছে...</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1 cropper-quick-controls">
+                              <button type="button" class="btn btn-xs btn-outline-teal text-white" id="cropZoomInBtn" title="জুম ইন"><i class="bi bi-zoom-in"></i></button>
+                              <button type="button" class="btn btn-xs btn-outline-teal text-white" id="cropZoomOutBtn" title="জুম আউট"><i class="bi bi-zoom-out"></i></button>
+                              <button type="button" class="btn btn-xs btn-outline-teal text-white" id="cropRotateBtn" title="ছবি ঘোরান"><i class="bi bi-arrow-clockwise"></i></button>
+                              <button type="button" class="btn btn-xs btn-outline-teal text-white" id="cropResetAiBtn" title="AI ক্রপ বক্সে ফিরে যান"><i class="bi bi-arrow-counterclockwise"></i></button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <!-- Cropper Container -->
+                        <div class="cropper-box-wrapper" id="cropperBoxWrapper">
+                          <img id="cropperImg" src="" alt="ক্রপ করার ছবি">
+                        </div>
+                      </div>
+
+                      <!-- Studio Photo Box with Static Image Preview (Shown after Generation) -->
+                      <div class="studio-photo-box d-none" id="studioPhotoBox">
+                        <img id="mainCanvasImg" src="" alt="স্টুডিও ফটো" class="canvas-result-img">
+                        <div class="canvas-watermark-tag" id="canvasSizeBadge">পাসপোর্ট (৪০×৫০ মিমি)</div>
+                      </div>
+
+                      <!-- Processing Spinner Overlay -->
+                      <div class="canvas-processing-overlay d-none" id="canvasLoadingOverlay">
+                        <div class="spinner-grow text-teal mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+                        <h5 class="fw-bold text-white mb-1" id="loadingTitle">ছবি প্রস্তুত করা হচ্ছে...</h5>
+                        <p class="text-teal-light small mb-0" id="loadingDesc">AI দিয়ে ব্যাকগ্রাউন্ড রিমুভ ও পোশাক সেট করা হচ্ছে</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Canvas Bottom Bar / Download Area -->
+                <div class="canvas-bottombar d-none" id="canvasBottomBar">
+                  <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 w-100">
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="badge bg-success py-2 px-3">
+                        <i class="bi bi-check-circle-fill me-1"></i> এআই প্রসেসিং সম্পন্ন
+                      </span>
+                      <small class="text-muted" id="fileDimensionsInfo">৪৭২ × ৫৯১ পিক্সেল (৩০০ DPI)</small>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2">
+                      <button type="button" class="btn btn-outline-teal px-3 py-2 text-white" id="openPrintModalBtn" title="এ৪ পেপারে একাধিক ছবি সাজিয়ে প্রিন্ট করুন">
+                        <i class="bi bi-printer-fill me-2 text-teal"></i>ছবি প্রিন্ট করুন
+                      </button>
+                      <a id="studioDownloadBtn" href="#" download="passport_photo.jpg" class="btn btn-primary-teal px-4 py-2">
+                        <i class="bi bi-download me-2"></i>পাসপোর্ট ফটো ডাউনলোড করুন
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ========================================================
+                 RIGHT COLUMN: Mobile Upload Card & Studio Info
+                 ======================================================== -->
+            <div class="col-12 col-lg-3 col-xl-3 studio-col-info">
+              <div class="studio-panel info-panel h-100">
+                <!-- Mobile QR Upload Card -->
+                <div class="mobile-upload-card mb-4">
+                  <div class="mobile-card-header">
+                    <div class="mobile-icon-circle">
+                      <i class="bi bi-phone-fill"></i>
+                    </div>
+                    <div>
+                      <h6 class="fw-bold mb-0 text-white">মোবাইল থেকে আপলোড</h6>
+                      <small class="text-teal-light">তাত্ক্ষণিক ক্যামেরা ক্যাপচার</small>
+                    </div>
+                  </div>
+
+                  <div class="mobile-card-body text-center">
+                    <p class="small text-muted mb-3">
+                      মোবাইল ক্যামেরা দিয়ে কিউআর কোড স্ক্যান করে সরাসরি সেলফি বা ছবি পাঠান:
+                    </p>
+
+                    <!-- Clean SVG QR Code Placeholder -->
+                    <div class="qr-code-wrapper">
+                      <svg class="qr-svg" viewBox="0 0 100 100" width="130" height="130">
+                        <rect width="100" height="100" fill="#ffffff" rx="8"/>
+                        <!-- Top-left eye -->
+                        <rect x="10" y="10" width="26" height="26" fill="#135E7D" rx="4"/>
+                        <rect x="15" y="15" width="16" height="16" fill="#ffffff" rx="2"/>
+                        <rect x="19" y="19" width="8" height="8" fill="#135E7D"/>
+                        <!-- Top-right eye -->
+                        <rect x="64" y="10" width="26" height="26" fill="#135E7D" rx="4"/>
+                        <rect x="69" y="15" width="16" height="16" fill="#ffffff" rx="2"/>
+                        <rect x="73" y="19" width="8" height="8" fill="#135E7D"/>
+                        <!-- Bottom-left eye -->
+                        <rect x="10" y="64" width="26" height="26" fill="#135E7D" rx="4"/>
+                        <rect x="15" y="69" width="16" height="16" fill="#ffffff" rx="2"/>
+                        <rect x="19" y="73" width="8" height="8" fill="#135E7D"/>
+                        <!-- Decorative matrix blocks -->
+                        <rect x="42" y="12" width="6" height="6" fill="#135E7D"/>
+                        <rect x="52" y="12" width="6" height="6" fill="#135E7D"/>
+                        <rect x="42" y="24" width="6" height="14" fill="#135E7D"/>
+                        <rect x="52" y="32" width="6" height="6" fill="#135E7D"/>
+                        <rect x="42" y="44" width="6" height="6" fill="#135E7D"/>
+                        <rect x="12" y="44" width="12" height="6" fill="#135E7D"/>
+                        <rect x="28" y="44" width="8" height="6" fill="#135E7D"/>
+                        <rect x="64" y="44" width="14" height="6" fill="#135E7D"/>
+                        <rect x="82" y="44" width="6" height="6" fill="#135E7D"/>
+                        <rect x="42" y="56" width="6" height="12" fill="#135E7D"/>
+                        <rect x="52" y="56" width="6" height="6" fill="#135E7D"/>
+                        <rect x="52" y="68" width="6" height="12" fill="#135E7D"/>
+                        <rect x="64" y="56" width="8" height="8" fill="#135E7D"/>
+                        <rect x="78" y="56" width="10" height="6" fill="#135E7D"/>
+                        <rect x="64" y="70" width="6" height="18" fill="#135E7D"/>
+                        <rect x="76" y="68" width="12" height="8" fill="#135E7D"/>
+                        <rect x="76" y="82" width="12" height="6" fill="#135E7D"/>
+                      </svg>
+                      <div class="qr-scan-line"></div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-teal w-100 mt-3" id="qrScanSimulateBtn">
+                      <i class="bi bi-qr-code-scan me-2"></i>স্ক্যান QR কোড
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Guidelines Card -->
+                <div class="guidelines-card">
+                  <div class="guidelines-header">
+                    <i class="bi bi-shield-check text-teal"></i>
+                    <strong>পাসপোর্ট নির্দেশিকা</strong>
+                  </div>
+                  <ul class="guidelines-list">
+                    <li>
+                      <i class="bi bi-check2-circle text-success"></i>
+                      <span><strong>সোজাসুজি দৃষ্টি:</strong> ক্যামেরার দিকে সরাসরি তাকিয়ে থাকুন।</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-circle text-success"></i>
+                      <span><strong>পর্যাপ্ত আলো:</strong> মুখের উভয় পাশে সমান আলো থাকা আবশ্যক।</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-x-circle text-danger"></i>
+                      <span><strong>টুপি/চশমা পরিহার:</strong> রঙিন বা আলোর প্রতিফলন হয় এমন চশমা পরবেন না।</span>
+                    </li>
+                    <li>
+                      <i class="bi bi-check2-circle text-success"></i>
+                      <span><strong>স্বয়ংক্রিয় ক্রপ:</strong> আমাদের AI স্বয়ংক্রিয়ভাবে মাথা ও কাঁধের সঠিক অনুপাত নির্ধারণ করে।</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ========================================================
+               RECENT EDITED PHOTOS (সাম্প্রতিক এডিট করা ছবি) SECTION
+               ======================================================== -->
+          <div class="recent-gallery-container" id="recentEditedSection">
+            <div class="recent-gallery-header">
+              <h6 class="recent-gallery-title">
+                <span class="recent-gallery-pipe">|</span>সাম্প্রতিক এডিট করা ছবি
+                <span class="badge bg-dark-subtle border border-secondary text-teal small ms-2" id="recentBadgeCount">{{ recent_photos|length }} টি</span>
+              </h6>
+              <div class="recent-gallery-actions">
+                <button type="button" class="recent-nav-btn" id="recentGalleryPrevBtn" title="বামে স্ক্রোল করুন" aria-label="বামে স্ক্রোল">
+                  <i class="bi bi-chevron-left"></i>
+                </button>
+                <button type="button" class="recent-nav-btn" id="recentGalleryNextBtn" title="ডানে স্ক্রোল করুন" aria-label="ডানে স্ক্রোল">
+                  <i class="bi bi-chevron-right"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-orange-action" id="recentViewAllBtn" title="সব সাম্প্রতিক ছবি দেখুন">
+                  <i class="bi bi-box-arrow-up-right"></i>
+                  <span>সব ছবি দেখুন</span>
+                </button>
+                <button type="button" class="recent-gear-btn" id="recentSettingsBtn" title="গ্যালারি সেটিংস">
+                  <i class="bi bi-gear-fill"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Horizontal Scroll Slider -->
+            <div class="recent-gallery-slider" id="recentGallerySlider">
+              {% if recent_photos %}
+                {% for photo_file in recent_photos %}
+                  <div class="recent-photo-card" data-filename="{{ photo_file }}" title="ক্লিক করে প্রিভিউ ও প্রিন্ট করুন">
+                    <img src="{{ url_for('static', filename='recent_photos/' + photo_file) }}" alt="এডিট করা ছবি" loading="lazy">
+                    <div class="recent-photo-overlay">
+                      <i class="bi bi-eye-fill"></i>
+                    </div>
+                  </div>
+                {% endfor %}
+              {% else %}
+                <div class="recent-gallery-empty text-center w-100 py-3 text-white-50 small" id="recentEmptyState">
+                  <i class="bi bi-images me-1 text-teal"></i> এখনও কোনো ছবি এডিট করা হয়নি। উপরে ছবি তৈরি করলে এখানে জমা হবে।
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div>&copy; 2026 <strong>কাজ করা সহজ</strong> - স্মার্ট স্টুডিও সিস্টেম</div>
+        <div>ওপেনসিভি ফেস ডিটেকশন ও রিমবিজি ব্যাকএন্ড দ্বারা চালিত</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       STUDIO PRINT MANAGER MODAL (FULL SCREEN A4 SHEET)
+       ======================================================== -->
+  <div class="print-modal-backdrop d-none" id="printModalBackdrop"></div>
+
+  <div class="print-modal d-none" id="printModal" role="dialog" aria-modal="true" aria-labelledby="printModalTitle">
+    <!-- Top Modal Bar -->
+    <div class="print-modal-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center gap-3">
+        <div class="print-logo-badge">
+          <i class="bi bi-printer-fill text-teal fs-4"></i>
+        </div>
+        <div>
+          <h5 class="mb-0 fw-bold text-white" id="printModalTitle">প্রফেশনাল স্টুডিও প্রিন্ট ম্যানেজার</h5>
+          <small class="text-teal-light">A4 ফটো পেপার লেআউট (২১০ × ২৯৭ মিমি)</small>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <div class="print-header-stats d-none d-md-flex align-items-center gap-2 text-white-50 small">
+          <span class="badge bg-dark-subtle border border-secondary px-3 py-2 text-white">
+            মোট ছবি: <strong class="text-teal ms-1" id="sheetPhotoCount">0</strong> টি
+          </span>
+        </div>
+        <button type="button" class="btn btn-outline-light btn-sm px-3 py-1" id="closePrintModalBtn" aria-label="বন্ধ করুন">
+          <i class="bi bi-x-lg me-1"></i> বন্ধ করুন
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Modal Layout (2 Columns: Left Controls, Right A4 Canvas) -->
+    <div class="print-modal-body">
+      <!-- LEFT CONTROLS SIDEBAR -->
+      <aside class="print-modal-sidebar">
+        <div class="print-sidebar-content">
+          <!-- 1. Recent Photos Gallery -->
+          <div class="print-control-section mb-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <span class="control-section-title">
+                <i class="bi bi-images text-teal me-1"></i> নির্বাচিত ছবি (Recent Photos)
+              </span>
+              <span class="badge bg-secondary-subtle text-white-50" id="recentPhotosCountBadge">0 টি</span>
+            </div>
+            <div class="recent-photos-grid" id="recentPhotosGrid">
+              <!-- Dynamically populated thumbnails -->
+            </div>
+          </div>
+
+          <!-- 2. Quick Add Buttons (Grouped by Sizes) -->
+          <div class="print-control-section mb-3">
+            <span class="control-section-title d-block mb-2">
+              <i class="bi bi-plus-circle-fill text-teal me-1"></i> কুইক অ্যাড (Quick Add)
+            </span>
+
+            <!-- Passport 40x50mm -->
+            <div class="size-group-card mb-2">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="size-group-label">পাসপোর্ট (40×50 mm)</span>
+                <span class="size-group-sub">স্ট্যান্ডার্ড</span>
+              </div>
+              <div class="btn-group w-100" role="group">
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="passport" data-count="1">+১ কপি</button>
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="passport" data-count="4">+৪ কপি</button>
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="passport" data-count="8">+৮ কপি</button>
+              </div>
+            </div>
+
+            <!-- Stamp 20x25mm -->
+            <div class="size-group-card mb-2">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="size-group-label">স্ট্যাম্প (20×25 mm)</span>
+                <span class="size-group-sub">ছোট সাইজ</span>
+              </div>
+              <div class="btn-group w-100" role="group">
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="stamp" data-count="1">+১ কপি</button>
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="stamp" data-count="4">+৪ কপি</button>
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="stamp" data-count="8">+৮ কপি</button>
+              </div>
+            </div>
+
+            <!-- R Sizes (Photo Prints) -->
+            <div class="size-group-card mb-2">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="size-group-label">R সাইজ পোর্ট্রেট</span>
+                <span class="size-group-sub">ফটো ফ্রেম</span>
+              </div>
+              <div class="d-grid grid-r-sizes gap-1">
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="2r" data-count="1">2R (2.5×3.5")</button>
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="3r" data-count="1">3R (3.5×5")</button>
+                <button type="button" class="btn btn-sm btn-outline-teal quick-add-btn" data-size="4r" data-count="1">4R (4×6")</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Options (Borders & Spacing) -->
+          <div class="print-control-section mb-3">
+            <span class="control-section-title d-block mb-2">
+              <i class="bi bi-sliders text-teal me-1"></i> প্রিন্ট অপশন (Options)
+            </span>
+
+            <div class="options-checklist mb-3">
+              <label class="form-check d-flex align-items-center gap-2 mb-2 custom-check-label">
+                <input class="form-check-input" type="checkbox" id="checkCuttingBorder" checked>
+                <span>কাটিং বর্ডার (Cutting Guide Border)</span>
+              </label>
+              <label class="form-check d-flex align-items-center gap-2 mb-0 custom-check-label">
+                <input class="form-check-input" type="checkbox" id="checkPhotoBorder">
+                <span>ফটো বর্ডার (Thin White Photo Border)</span>
+              </label>
+            </div>
+
+            <!-- Spacing Slider -->
+            <div class="spacing-slider-wrap">
+              <div class="d-flex align-items-center justify-content-between mb-1">
+                <span class="small text-white-50">ছবির মাঝের দূরত্ব (Spacing):</span>
+                <strong class="text-teal small" id="spacingValueText">3.0 mm</strong>
+              </div>
+              <input type="range" class="form-range custom-teal-range" id="printSpacingSlider" min="0" max="10" step="0.5" value="3">
+            </div>
+          </div>
+
+          <!-- Clear Canvas Button -->
+          <button type="button" class="btn btn-sm btn-outline-danger w-100 mb-3" id="clearSheetBtn">
+            <i class="bi bi-trash3 me-1"></i> শিটের সব ছবি মুছুন (Clear Sheet)
+          </button>
+        </div>
+
+        <!-- 4. Action Buttons (PDF & Print) -->
+        <div class="print-sidebar-footer pt-3 border-top border-secondary-subtle">
+          <button type="button" class="btn btn-outline-teal w-100 py-2 mb-2 text-white" id="downloadPdfBtn">
+            <i class="bi bi-file-earmark-pdf-fill me-2 text-danger"></i>পিডিএফ ডাউনলোড (PDF)
+          </button>
+          <button type="button" class="btn btn-success btn-lg w-100 py-3 fw-bold fs-5 shadow-lg d-flex align-items-center justify-content-center gap-2" id="triggerPrintBtn">
+            <i class="bi bi-printer-fill fs-4"></i>
+            <span>প্রিন্ট করুন (Print A4)</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- RIGHT MAIN AREA: A4 Paper Preview Canvas -->
+      <main class="print-modal-main flex-grow-1 p-3 p-md-4 position-relative d-flex flex-column align-items-center">
+        <!-- Canvas Top Toolbar (Zoom & Paper Info) -->
+        <div class="print-zoom-toolbar d-flex align-items-center justify-content-between w-100 mb-2 px-3">
+          <div class="d-flex align-items-center gap-2 text-white-50 small">
+            <i class="bi bi-file-earmark-text text-teal"></i>
+            <span>কাগজ: <strong>A4 Portrait</strong> (210×297 mm) | 300 DPI রেডি</span>
+          </div>
+          <div class="d-flex align-items-center gap-1 zoom-controls">
+            <button type="button" class="btn btn-sm btn-dark-subtle text-white px-2 py-1" id="zoomOutBtn" title="জুম আউট"><i class="bi bi-dash-lg"></i></button>
+            <span class="small text-teal px-2 fw-bold" id="zoomLevelText">100%</span>
+            <button type="button" class="btn btn-sm btn-dark-subtle text-white px-2 py-1" id="zoomInBtn" title="জুম ইন"><i class="bi bi-plus-lg"></i></button>
+            <button type="button" class="btn btn-sm btn-dark-subtle text-white px-2 py-1 ms-1" id="zoomFitBtn" title="ভিউ ফিট করুন">ফিট ভিউ</button>
+          </div>
+        </div>
+
+        <!-- A4 Canvas Scroll Wrapper -->
+        <div class="a4-sheet-scroll-container" id="a4ScrollContainer">
+          <div class="a4-sheet-wrapper" id="a4SheetWrapper">
+            <!-- Physical A4 Canvas (Exact 210mm x 297mm) -->
+            <div class="a4-sheet has-cutting-border" id="a4PrintSheet" style="--print-gap: 3mm;">
+              <!-- Photos are dynamically rendered here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Hint on screen -->
+        <div class="a4-bottom-hint text-center mt-2 small text-white-50">
+          <i class="bi bi-info-circle me-1 text-teal"></i> ছবির উপর মাউস নিয়ে <i class="bi bi-trash text-danger"></i> ক্লিক করে যে কোনো ছবি মুছে ফেলতে পারেন।
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Cropper.js JS CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+  <!-- Studio Frontend JavaScript Logic -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mobile sidebar toggle
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      if (sidebarToggle && sidebar && sidebarOverlay) {
+        sidebarToggle.addEventListener('click', () => {
+          sidebar.classList.toggle('open');
+          sidebarOverlay.classList.toggle('active');
+        });
+
+        sidebarOverlay.addEventListener('click', () => {
+          sidebar.classList.remove('open');
+          sidebarOverlay.classList.remove('active');
+        });
+      }
+
+      // =========================================================================
+      // STATE MANAGEMENT & CONFIGURATION
+      // =========================================================================
+      let selectedFile = null;
+      let originalImageSrc = '';
+      let processedImageSrc = '';
+      let isShowingOriginal = false;
+
+      // Cropper.js & AI Face Crop State
+      let cropper = null;
+      let detectedFaceData = null;
+      let suggestedCropData = null;
+
+      let currentSettings = {
+        size: 'passport',
+        bgColor: '#FFFFFF',
+        outfit: 'none',
+        outfitColor: '#111827',
+        retouch: true,
+        brightness: true
+      };
+
+      const sizeNames = {
+        passport: 'পাসপোর্ট (৪০×৫০ মিমি)',
+        stamp: 'স্ট্যাম্প (২০×২৫ মিমি)',
+        visa: 'ভিসা (৫০×৫০ মিমি)'
+      };
+
+      const sizeDimensions = {
+        passport: '৪৭২ × ৫৯১ পিক্সেল (৩০০ DPI)',
+        stamp: '২৩৬ × ২৯৫ পিক্সেল (৩০০ DPI)',
+        visa: '৬০০ × ৬০০ পিক্সেল (৩০০ DPI)'
+      };
+
+      // DOM Elements
+      const canvasDropZone = document.getElementById('canvasDropZone');
+      const studioImageInput = document.getElementById('studioImageInput');
+      const canvasBrowseBtn = document.getElementById('canvasBrowseBtn');
+      const canvasEmptyState = document.getElementById('canvasEmptyState');
+      const canvasDisplayState = document.getElementById('canvasDisplayState');
+      const cropperStage = document.getElementById('cropperStage');
+      const cropperImg = document.getElementById('cropperImg');
+      const aiCropStatusText = document.getElementById('aiCropStatusText');
+      const cropZoomInBtn = document.getElementById('cropZoomInBtn');
+      const cropZoomOutBtn = document.getElementById('cropZoomOutBtn');
+      const cropRotateBtn = document.getElementById('cropRotateBtn');
+      const cropResetAiBtn = document.getElementById('cropResetAiBtn');
+      const studioPhotoBox = document.getElementById('studioPhotoBox');
+      const mainCanvasImg = document.getElementById('mainCanvasImg');
+      const canvasSizeBadge = document.getElementById('canvasSizeBadge');
+      const canvasActionToolbar = document.getElementById('canvasActionToolbar');
+      const recropBtn = document.getElementById('recropBtn');
+      const compareToggleBtn = document.getElementById('compareToggleBtn');
+      const canvasResetBtn = document.getElementById('canvasResetBtn');
+      const canvasBottomBar = document.getElementById('canvasBottomBar');
+      const canvasLoadingOverlay = document.getElementById('canvasLoadingOverlay');
+      const loadingTitle = document.getElementById('loadingTitle');
+      const loadingDesc = document.getElementById('loadingDesc');
+      const fileDimensionsInfo = document.getElementById('fileDimensionsInfo');
+      const studioDownloadBtn = document.getElementById('studioDownloadBtn');
+
+      const generateBtn = document.getElementById('generateBtn');
+      const generateSpinner = document.getElementById('generateSpinner');
+      const generateIcon = document.getElementById('generateIcon');
+      const generateBtnText = document.getElementById('generateBtnText');
+
+      // =========================================================================
+      // 1. PASSPORT BACKGROUND COLOR SELECTION
+      // =========================================================================
+      function updateBackgroundColor(colorHex) {
+        currentSettings.bgColor = colorHex;
+        if (selectedColorCode) selectedColorCode.textContent = colorHex;
+      }
+
+      const swatchButtons = document.querySelectorAll('.swatch-btn[data-color]');
+      const customColorBtn = document.getElementById('customColorBtn');
+      const nativeColorPicker = document.getElementById('nativeColorPicker');
+      const customPaletteIcon = document.getElementById('customPaletteIcon');
+      const customCheckIcon = document.getElementById('customCheckIcon');
+      const selectedColorCode = document.getElementById('selectedColorCode');
+
+      function deactivateAllSwatches() {
+        document.querySelectorAll('.swatch-btn').forEach(btn => btn.classList.remove('active'));
+        if (customCheckIcon && customPaletteIcon) {
+          customCheckIcon.classList.add('d-none');
+          customPaletteIcon.classList.remove('d-none');
+        }
+      }
+
+      swatchButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          deactivateAllSwatches();
+          btn.classList.add('active');
+          updateBackgroundColor(btn.dataset.color);
+        });
+      });
+
+      if (customColorBtn && nativeColorPicker) {
+        customColorBtn.addEventListener('click', (e) => {
+          if (e.target !== nativeColorPicker) {
+            nativeColorPicker.click();
+          }
+        });
+
+        nativeColorPicker.addEventListener('input', (e) => {
+          const pickedColor = e.target.value.toUpperCase();
+          deactivateAllSwatches();
+          customColorBtn.classList.add('active');
+          customColorBtn.style.background = pickedColor;
+          if (customPaletteIcon && customCheckIcon) {
+            customPaletteIcon.classList.add('d-none');
+            customCheckIcon.classList.remove('d-none');
+          }
+          updateBackgroundColor(pickedColor);
+        });
+      }
+
+      // =========================================================================
+      // 2. OUTFIT STYLE GRID & COLOR PICKER POPUP
+      // =========================================================================
+      const outfitSlots = document.querySelectorAll('.outfit-slot');
+      const outfitColorPopup = document.getElementById('outfitColorPopup');
+      const outfitPopupTitle = document.getElementById('outfitPopupTitle');
+      const outfitPopupCloseBtn = document.getElementById('outfitPopupCloseBtn');
+      const outfitSwatches = document.querySelectorAll('.outfit-color-swatch');
+
+      function closeOutfitColorPopup() {
+        if (outfitColorPopup) outfitColorPopup.classList.add('d-none');
+      }
+
+      function openOutfitColorPopup(slot) {
+        if (!outfitColorPopup) return;
+        outfitPopupTitle.textContent = 'স্যুট — রঙ বেছে নিন';
+
+        const container = document.getElementById('outfitGridContainer');
+        if (container) {
+          if (slot.offsetTop > 100) {
+            outfitColorPopup.style.top = `${Math.max(0, slot.offsetTop - 145)}px`;
+          } else {
+            outfitColorPopup.style.top = `${slot.offsetTop + slot.offsetHeight + 6}px`;
+          }
+          outfitColorPopup.style.left = '0px';
+          outfitColorPopup.style.right = '0px';
+        }
+        outfitColorPopup.classList.remove('d-none');
+      }
+
+      outfitSlots.forEach(slot => {
+        slot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          outfitSlots.forEach(s => s.classList.remove('active'));
+          slot.classList.add('active');
+
+          const outfitId = slot.dataset.outfit;
+          currentSettings.outfit = outfitId;
+
+          if (outfitId === 'none') {
+            closeOutfitColorPopup();
+          } else {
+            openOutfitColorPopup(slot);
+          }
+        });
+      });
+
+      outfitSwatches.forEach(swatch => {
+        swatch.addEventListener('click', (e) => {
+          e.stopPropagation();
+          outfitSwatches.forEach(s => {
+            s.classList.remove('active');
+            const check = s.querySelector('.swatch-check-icon');
+            if (check) check.classList.add('d-none');
+          });
+
+          swatch.classList.add('active');
+          const check = swatch.querySelector('.swatch-check-icon');
+          if (check) check.classList.remove('d-none');
+
+          currentSettings.outfitColor = swatch.dataset.color;
+        });
+      });
+
+      if (outfitPopupCloseBtn) {
+        outfitPopupCloseBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeOutfitColorPopup();
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (outfitColorPopup && !outfitColorPopup.classList.contains('d-none')) {
+          if (!outfitColorPopup.contains(e.target) && !e.target.closest('.outfit-slot')) {
+            closeOutfitColorPopup();
+          }
+        }
+      });
+
+      // =========================================================================
+      // 3. PHOTO SIZES & EXTRA INSTRUCTIONS
+      // =========================================================================
+      const sizeButtons = document.querySelectorAll('.size-btn');
+      sizeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sizeButtons.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentSettings.size = btn.dataset.size;
+          canvasSizeBadge.textContent = sizeNames[currentSettings.size];
+          fileDimensionsInfo.textContent = sizeDimensions[currentSettings.size];
+
+          // Cropper aspect ratio update
+          const targetAspect = currentSettings.size === 'visa' ? 1.0 : (4.0 / 5.0);
+          if (cropper) {
+            cropper.setAspectRatio(targetAspect);
+          }
+        });
+      });
+
+      // Quick Cropper Controls (Zoom, Rotate, Reset to AI Crop)
+      if (cropZoomInBtn) {
+        cropZoomInBtn.addEventListener('click', () => {
+          if (cropper) cropper.zoom(0.1);
+        });
+      }
+      if (cropZoomOutBtn) {
+        cropZoomOutBtn.addEventListener('click', () => {
+          if (cropper) cropper.zoom(-0.1);
+        });
+      }
+      if (cropRotateBtn) {
+        cropRotateBtn.addEventListener('click', () => {
+          if (cropper) cropper.rotate(90);
+        });
+      }
+      if (cropResetAiBtn) {
+        cropResetAiBtn.addEventListener('click', () => {
+          if (cropper && suggestedCropData) {
+            cropper.setData(suggestedCropData);
+          }
+        });
+      }
+
+      const instructionButtons = document.querySelectorAll('.instruction-btn');
+      instructionButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('active');
+          const instType = btn.dataset.instruction;
+          if (instType === 'beauty_enhance' || instType === 'smooth_skin') {
+            currentSettings.retouch = btn.classList.contains('active');
+          }
+          if (instType === 'brighten' || instType === 'studio_lighting') {
+            currentSettings.brightness = btn.classList.contains('active');
+          }
+          if (instType === 'custom' && btn.classList.contains('active')) {
+            const customPrompt = prompt('আপনার কাস্টম নির্দেশনা লিখুন:', '');
+            if (customPrompt) {
+              btn.setAttribute('title', 'কাস্টম: ' + customPrompt);
+            }
+          }
+        });
+      });
+
+      // =========================================================================
+      // 4. FILE UPLOAD & STATIC PREVIEW
+      // =========================================================================
+      canvasBrowseBtn.addEventListener('click', () => studioImageInput.click());
+
+      studioImageInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files[0]) {
+          processUploadedFile(e.target.files[0]);
+        }
+      });
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        canvasDropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          canvasDropZone.classList.add('canvas-drag-over');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        canvasDropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          canvasDropZone.classList.remove('canvas-drag-over');
+        });
+      });
+
+      canvasDropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        if (dt.files && dt.files[0]) {
+          processUploadedFile(dt.files[0]);
+        }
+      });
+
+      async function processUploadedFile(file) {
+        if (!file.type.match('image.*')) {
+          alert('অনুগ্রহ করে একটি সঠিক ইমেজ ফাইল (JPG, PNG, WEBP) নির্বাচন করুন।');
+          return;
+        }
+
+        selectedFile = file;
+
+        // Viewport Transition
+        canvasEmptyState.classList.add('d-none');
+        canvasDisplayState.classList.remove('d-none');
+        canvasActionToolbar.classList.remove('d-none');
+        canvasBottomBar.classList.add('d-none');
+        compareToggleBtn.classList.add('d-none');
+        recropBtn.classList.add('d-none');
+
+        studioPhotoBox.classList.add('d-none');
+        cropperStage.classList.remove('d-none');
+
+        aiCropStatusText.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status"></span> AI ফেস ডিটেকশন ও ক্রপ বক্স প্রস্তুত করা হচ্ছে...';
+        generateBtn.disabled = true;
+        generateBtn.classList.remove('pulse-ready');
+
+        // Destroy previous cropper if exists
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          originalImageSrc = e.target.result;
+          cropperImg.src = originalImageSrc;
+
+          // Call Fast Face Detection API concurrently
+          let faceData = null;
+          try {
+            const detectFormData = new FormData();
+            detectFormData.append('file', file);
+            const res = await fetch('/api/detect-face', {
+              method: 'POST',
+              body: detectFormData
+            });
+            if (res.ok) {
+              faceData = await res.json();
+            }
+          } catch (err) {
+            console.warn('Face detection API error:', err);
+          }
+
+          detectedFaceData = faceData;
+
+          // Initialize Cropper.js (aspectRatio: 4/5 for standard passport)
+          const targetAspect = currentSettings.size === 'visa' ? 1.0 : (4.0 / 5.0);
+
+          cropper = new Cropper(cropperImg, {
+            aspectRatio: targetAspect,
+            viewMode: 1,
+            dragMode: 'move',
+            autoCropArea: 0.85,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: true,
+            cropBoxResizable: true,
+            toggleDragModeOnDblclick: false,
+            ready() {
+              applyAiSuggestedCrop(faceData);
+              generateBtn.disabled = false;
+              generateBtn.classList.add('pulse-ready');
+            }
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function applyAiSuggestedCrop(faceData) {
+        if (!cropper) return;
+
+        const imgData = cropper.getImageData();
+        const naturalW = imgData.naturalWidth;
+        const naturalH = imgData.naturalHeight;
+
+        let cropBox = null;
+
+        if (faceData && faceData.success && faceData.face && faceData.face.h > 0) {
+          const fh = faceData.face.h;
+          const fw = faceData.face.w;
+          const fx = faceData.face.x;
+          const fy = faceData.face.y;
+
+          // Exact mathematical proportions requested:
+          // 1. Height (H) such that face height (h) is exactly 45% of H: H = int(h / 0.45)
+          let H = Math.round(fh / 0.45);
+
+          // 2. Width (W) strictly maintaining standard 4:5 passport ratio: W = int(H * 0.8)
+          let W = currentSettings.size === 'visa' ? H : Math.round(H * 0.80);
+
+          // 3. Vertical alignment (Headroom): 18% to 20% headroom above detected face: y = int(fy - (H * 0.20))
+          let y = Math.round(fy - (H * 0.20));
+
+          // 4. Horizontal centering: Center box horizontally based on face center
+          let cx = fx + (fw / 2.0);
+          let x = Math.round(cx - (W / 2.0));
+
+          // Boundary adjustments
+          if (H > naturalH) {
+            H = naturalH;
+            W = currentSettings.size === 'visa' ? H : Math.round(H * 0.80);
+          }
+          if (W > naturalW) {
+            W = naturalW;
+            H = currentSettings.size === 'visa' ? W : Math.round(W / 0.80);
+          }
+
+          x = Math.max(0, Math.min(x, naturalW - W));
+          y = Math.max(0, Math.min(y, naturalH - H));
+
+          cropBox = { x, y, width: W, height: H };
+          suggestedCropData = { ...cropBox };
+          cropper.setData(cropBox);
+
+          aiCropStatusText.innerHTML = '<i class="bi bi-check-circle-fill text-teal me-1"></i> AI স্মার্ট ক্রপ সেট হয়েছে (মাথার উপরে ২০% হেডরুম)। প্রয়োজনে বক্সটি টেনে বড়/ছোট করুন।';
+        } else {
+          // Default fallback
+          let H = Math.round(naturalH * 0.75);
+          let W = currentSettings.size === 'visa' ? H : Math.round(H * 0.80);
+          if (W > naturalW) {
+            W = naturalW;
+            H = currentSettings.size === 'visa' ? W : Math.round(W / 0.80);
+          }
+          let x = Math.max(0, Math.round((naturalW - W) / 2));
+          let y = Math.max(0, Math.round((naturalH - H) * 0.20));
+          cropBox = { x, y, width: W, height: H };
+          suggestedCropData = { ...cropBox };
+          cropper.setData(cropBox);
+
+          aiCropStatusText.textContent = 'মাথা ও কাঁধের মাপ অনুযায়ী ক্রপ বক্সটি ড্র্যাগ করে সাজিয়ে নিন।';
+        }
+      }
+
+      // =========================================================================
+      // 5. AUTOMATIC STUDIO GENERATION (POST /photo-edit/process)
+      // =========================================================================
+      generateBtn.addEventListener('click', async () => {
+        if (!cropper && !selectedFile) return;
+
+        // UI Loading Feedback
+        generateBtn.disabled = true;
+        generateBtn.classList.remove('pulse-ready');
+        generateSpinner.classList.remove('d-none');
+        generateIcon.classList.add('d-none');
+        generateBtnText.textContent = 'স্টুডিও প্রসেসিং চলছে...';
+
+        loadingTitle.textContent = 'স্টুডিও প্রসেসিং চলছে...';
+        loadingDesc.textContent = 'AI ব্যাকগ্রাউন্ড রিমুভ, কালার সেট ও পোশাক স্বয়ংক্রিয়ভাবে ফিট করা হচ্ছে';
+        canvasLoadingOverlay.classList.remove('d-none');
+
+        const targetDim = currentSettings.size === 'visa'
+          ? { width: 600, height: 600 }
+          : (currentSettings.size === 'stamp' ? { width: 236, height: 295 } : { width: 472, height: 591 });
+
+        // Get perfectly cropped image from Cropper.js
+        const croppedCanvas = cropper.getCroppedCanvas({
+          width: targetDim.width,
+          height: targetDim.height,
+          imageSmoothingEnabled: true,
+          imageSmoothingQuality: 'high'
+        });
+
+        croppedCanvas.toBlob(async (blob) => {
+          if (!blob) {
+            alert('ইমেজ ক্রপ করতে সমস্যা হয়েছে।');
+            generateBtn.disabled = false;
+            generateSpinner.classList.add('d-none');
+            generateIcon.classList.remove('d-none');
+            generateBtnText.textContent = 'ফটো জেনারেট করুন';
+            canvasLoadingOverlay.classList.add('d-none');
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('file', blob, 'cropped_passport.jpg');
+          formData.append('photo_size', currentSettings.size);
+          formData.append('bg_color', currentSettings.bgColor);
+          formData.append('outfit', currentSettings.outfit);
+          formData.append('outfit_color', currentSettings.outfitColor);
+          formData.append('retouch', currentSettings.retouch ? 'true' : 'false');
+          formData.append('brightness', currentSettings.brightness ? 'true' : 'false');
+
+          try {
+            const response = await fetch('/photo-edit/process', {
+              method: 'POST',
+              body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+              processedImageSrc = data.processed_image;
+              mainCanvasImg.src = processedImageSrc;
+              isShowingOriginal = false;
+
+              // Transition to generated studio photo preview
+              cropperStage.classList.add('d-none');
+              studioPhotoBox.classList.remove('d-none');
+
+              canvasSizeBadge.textContent = sizeNames[currentSettings.size] + ' - রেডি';
+              fileDimensionsInfo.textContent = data.dimensions || sizeDimensions[currentSettings.size];
+
+              studioDownloadBtn.href = data.download_url || data.processed_image;
+              studioDownloadBtn.download = data.download_filename || `${currentSettings.size}_photo.jpg`;
+
+              canvasBottomBar.classList.remove('d-none');
+              compareToggleBtn.classList.remove('d-none');
+              compareToggleBtn.innerHTML = '<i class="bi bi-intersect me-1"></i> মূল ক্রপ দেখুন';
+              recropBtn.classList.remove('d-none');
+              if (topPrintBtn) topPrintBtn.classList.remove('d-none');
+              addRecentPhoto(processedImageSrc, sizeNames[currentSettings.size] || 'পাসপোর্ট');
+              prependRecentGalleryCard(data.recent_url || data.download_url || processedImageSrc, data.download_filename);
+            } else {
+              alert('ছবি প্রসেসিংয়ে সমস্যা হয়েছে: ' + (data.error || 'অজানা ত্রুটি'));
+            }
+          } catch (error) {
+            console.error(error);
+            alert('সার্ভারের সাথে সংযোগ স্থাপন করা সম্ভব হয়নি।');
+          } finally {
+            generateBtn.disabled = false;
+            generateSpinner.classList.add('d-none');
+            generateIcon.classList.remove('d-none');
+            generateBtnText.textContent = 'ফটো জেনারেট করুন';
+            canvasLoadingOverlay.classList.add('d-none');
+          }
+        }, 'image/jpeg', 0.98);
+      });
+
+      // Recrop Button: Return to Cropper view to adjust crop box
+      recropBtn.addEventListener('click', () => {
+        studioPhotoBox.classList.add('d-none');
+        cropperStage.classList.remove('d-none');
+        canvasBottomBar.classList.add('d-none');
+        compareToggleBtn.classList.add('d-none');
+        recropBtn.classList.add('d-none');
+        if (cropper) {
+          cropper.crop();
+        }
+      });
+
+      // Compare Original vs Processed Image
+      compareToggleBtn.addEventListener('click', () => {
+        if (!processedImageSrc) return;
+
+        if (isShowingOriginal) {
+          mainCanvasImg.src = processedImageSrc;
+          canvasSizeBadge.textContent = sizeNames[currentSettings.size] + ' - রেডি';
+          compareToggleBtn.innerHTML = '<i class="bi bi-intersect me-1"></i> মূল ক্রপ দেখুন';
+          isShowingOriginal = false;
+        } else {
+          if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            mainCanvasImg.src = croppedCanvas.toDataURL('image/jpeg');
+          } else {
+            mainCanvasImg.src = originalImageSrc;
+          }
+          canvasSizeBadge.textContent = 'ক্রপ করা মূল ছবি';
+          compareToggleBtn.innerHTML = '<i class="bi bi-check2-circle me-1"></i> স্টুডিও ভিউ দেখুন';
+          isShowingOriginal = true;
+        }
+      });
+
+      // Reset
+      canvasResetBtn.addEventListener('click', () => {
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+        selectedFile = null;
+        originalImageSrc = '';
+        processedImageSrc = '';
+        detectedFaceData = null;
+        suggestedCropData = null;
+        studioImageInput.value = '';
+        mainCanvasImg.src = '';
+        cropperImg.src = '';
+
+        cropperStage.classList.add('d-none');
+        studioPhotoBox.classList.add('d-none');
+        canvasDisplayState.classList.add('d-none');
+        canvasEmptyState.classList.remove('d-none');
+        canvasActionToolbar.classList.add('d-none');
+        canvasBottomBar.classList.add('d-none');
+        recropBtn.classList.add('d-none');
+        compareToggleBtn.classList.add('d-none');
+        if (topPrintBtn) topPrintBtn.classList.add('d-none');
+
+        generateBtn.disabled = true;
+        generateBtn.classList.remove('pulse-ready');
+      });
+
+      // QR Code Simulation Button
+      const qrScanSimulateBtn = document.getElementById('qrScanSimulateBtn');
+      if (qrScanSimulateBtn) {
+        qrScanSimulateBtn.addEventListener('click', () => {
+          alert('মোবাইল ক্যামেরা ওপেন করে এই কিউআর কোডটি স্ক্যান করুন অথবা সরাসরি ডিভাইসের ব্রাউজার থেকে একই লোকাল আইপি অ্যাড্রেসে প্রবেশ করুন।');
+        });
+      }
+
+      // =========================================================================
+      // 6. STUDIO PRINT MANAGER LOGIC (A4 SHEET & MULTI-PHOTO PRINTING)
+      // =========================================================================
+      const printModalBackdrop = document.getElementById('printModalBackdrop');
+      const printModal = document.getElementById('printModal');
+      const closePrintModalBtn = document.getElementById('closePrintModalBtn');
+      const openPrintModalBtn = document.getElementById('openPrintModalBtn');
+      const topPrintBtn = document.getElementById('topPrintBtn');
+      const recentPhotosGrid = document.getElementById('recentPhotosGrid');
+      const recentPhotosCountBadge = document.getElementById('recentPhotosCountBadge');
+      const sheetPhotoCount = document.getElementById('sheetPhotoCount');
+      const a4ScrollContainer = document.getElementById('a4ScrollContainer');
+      const a4SheetWrapper = document.getElementById('a4SheetWrapper');
+      const a4PrintSheet = document.getElementById('a4PrintSheet');
+      const printSpacingSlider = document.getElementById('printSpacingSlider');
+      const spacingValueText = document.getElementById('spacingValueText');
+      const checkCuttingBorder = document.getElementById('checkCuttingBorder');
+      const checkPhotoBorder = document.getElementById('checkPhotoBorder');
+      const clearSheetBtn = document.getElementById('clearSheetBtn');
+      const downloadPdfBtn = document.getElementById('downloadPdfBtn');
+      const triggerPrintBtn = document.getElementById('triggerPrintBtn');
+      const zoomOutBtn = document.getElementById('zoomOutBtn');
+      const zoomInBtn = document.getElementById('zoomInBtn');
+      const zoomFitBtn = document.getElementById('zoomFitBtn');
+      const zoomLevelText = document.getElementById('zoomLevelText');
+
+      let recentPhotos = [];
+      let activePrintPhotoUrl = '';
+      let currentPrintZoom = 0.75;
+
+      const sizeLabels = {
+        passport: '40×50mm',
+        stamp: '20×25mm',
+        '2r': '2R',
+        '3r': '3R',
+        '4r': '4R'
+      };
+
+      function addRecentPhoto(url, label) {
+        if (!url) return;
+        recentPhotos = recentPhotos.filter(p => p.url !== url);
+        recentPhotos.unshift({ url, label: label || 'ছবি', timestamp: Date.now() });
+        activePrintPhotoUrl = url;
+        renderRecentPhotos();
+      }
+
+      function renderRecentPhotos() {
+        if (!recentPhotosGrid) return;
+        recentPhotosGrid.innerHTML = '';
+
+        if (recentPhotos.length === 0) {
+          if (processedImageSrc) {
+            recentPhotos.push({ url: processedImageSrc, label: sizeNames[currentSettings.size] || 'পাসপোর্ট', timestamp: Date.now() });
+          } else if (originalImageSrc) {
+            recentPhotos.push({ url: originalImageSrc, label: 'মূল ছবি', timestamp: Date.now() });
+          }
+        }
+
+        if (recentPhotos.length === 0) {
+          recentPhotosGrid.innerHTML = '<span class="text-white-50 small p-1">কোনো ছবি নেই</span>';
+          if (recentPhotosCountBadge) recentPhotosCountBadge.textContent = '0 টি';
+          return;
+        }
+
+        if (!activePrintPhotoUrl || !recentPhotos.some(p => p.url === activePrintPhotoUrl)) {
+          activePrintPhotoUrl = recentPhotos[0].url;
+        }
+
+        if (recentPhotosCountBadge) {
+          recentPhotosCountBadge.textContent = `${recentPhotos.length} টি`;
+        }
+
+        recentPhotos.forEach((photo) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'recent-photo-thumb-wrap' + (photo.url === activePrintPhotoUrl ? ' active' : '');
+          wrap.title = 'প্রিন্টের জন্য সিলেক্ট করুন';
+          wrap.innerHTML = `
+            <img src="${photo.url}" class="recent-photo-thumb" alt="${photo.label}">
+            <div class="thumb-active-check"><i class="bi bi-check"></i></div>
+          `;
+          wrap.addEventListener('click', () => {
+            document.querySelectorAll('.recent-photo-thumb-wrap').forEach(w => w.classList.remove('active'));
+            wrap.classList.add('active');
+            activePrintPhotoUrl = photo.url;
+          });
+          recentPhotosGrid.appendChild(wrap);
+        });
+      }
+
+      function updateSheetCount() {
+        if (!a4PrintSheet) return;
+        const total = a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item').length;
+        if (sheetPhotoCount) {
+          sheetPhotoCount.textContent = total;
+        }
+      }
+
+      function addPhotosToSheet(size, count) {
+        const photoUrl = activePrintPhotoUrl || processedImageSrc || originalImageSrc;
+        if (!photoUrl) {
+          alert('অনুগ্রহ করে প্রথমে একটি ছবি জেনারেট বা আপলোড করুন।');
+          return;
+        }
+
+        if (!a4PrintSheet) return;
+
+        const isPhotoBorder = checkPhotoBorder ? checkPhotoBorder.checked : false;
+        const isCuttingBorder = checkCuttingBorder ? checkCuttingBorder.checked : true;
+
+        for (let i = 0; i < count; i++) {
+          const item = document.createElement('div');
+          item.className = 'print-photo-wrapper print-photo-item';
+          item.dataset.size = size;
+
+          if (isPhotoBorder) {
+            item.classList.add('has-photo-border');
+          }
+          if (isCuttingBorder) {
+            item.classList.add('has-cutting-border');
+          }
+
+          const img = document.createElement('img');
+          img.src = photoUrl;
+          img.className = 'print-photo-img';
+          img.alt = 'প্রিন্ট ছবি';
+
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'print-photo-delete-btn';
+          delBtn.title = 'মুছে ফেলুন';
+          delBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+          delBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            item.remove();
+            updateSheetCount();
+          });
+
+          const tag = document.createElement('span');
+          tag.className = 'print-photo-tag';
+          tag.textContent = sizeLabels[size] || size;
+
+          item.appendChild(img);
+          item.appendChild(delBtn);
+          item.appendChild(tag);
+
+          a4PrintSheet.appendChild(item);
+        }
+
+        updateSheetCount();
+      }
+
+      // Quick Add Buttons
+      document.querySelectorAll('.quick-add-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const size = btn.dataset.size || 'passport';
+          const count = parseInt(btn.dataset.count, 10) || 1;
+          addPhotosToSheet(size, count);
+        });
+      });
+
+      // Options: Cutting Border & Photo Border Event Listeners
+      if (checkCuttingBorder && a4PrintSheet) {
+        checkCuttingBorder.addEventListener('change', () => {
+          const isChecked = checkCuttingBorder.checked;
+          const wrappers = a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item');
+          wrappers.forEach(w => w.classList.toggle('has-cutting-border', isChecked));
+        });
+      }
+
+      if (checkPhotoBorder && a4PrintSheet) {
+        checkPhotoBorder.addEventListener('change', () => {
+          const isChecked = checkPhotoBorder.checked;
+          const wrappers = a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item');
+          wrappers.forEach(w => w.classList.toggle('has-photo-border', isChecked));
+        });
+      }
+
+      // Options: Spacing Slider
+      if (printSpacingSlider && a4PrintSheet) {
+        printSpacingSlider.addEventListener('input', (e) => {
+          const val = parseFloat(e.target.value) || 0;
+          if (spacingValueText) {
+            spacingValueText.textContent = `${val.toFixed(1)} mm`;
+          }
+          a4PrintSheet.style.setProperty('--print-gap', `${val}mm`);
+        });
+      }
+
+      // Clear Sheet Button
+      if (clearSheetBtn && a4PrintSheet) {
+        clearSheetBtn.addEventListener('click', () => {
+          const count = a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item').length;
+          if (count === 0) return;
+          if (confirm('আপনি কি নিশ্চিত যে শিটের সব ছবি মুছে ফেলতে চান?')) {
+            a4PrintSheet.innerHTML = '';
+            updateSheetCount();
+          }
+        });
+      }
+
+      // Zoom Controls for A4 Preview Canvas
+      function setPrintZoom(zoom) {
+        currentPrintZoom = Math.min(1.4, Math.max(0.35, zoom));
+        if (a4SheetWrapper) {
+          a4SheetWrapper.style.transform = `scale(${currentPrintZoom})`;
+        }
+        if (zoomLevelText) {
+          zoomLevelText.textContent = `${Math.round(currentPrintZoom * 100)}%`;
+        }
+      }
+
+      function fitPrintZoom() {
+        if (!a4ScrollContainer) return;
+        const availableW = a4ScrollContainer.clientWidth - 48; // padding
+        const a4WidthPx = 794;
+        const targetZoom = Math.min(1.0, Math.max(0.35, (availableW / a4WidthPx) * 0.95));
+        setPrintZoom(targetZoom);
+      }
+
+      if (zoomInBtn) zoomInBtn.addEventListener('click', () => setPrintZoom(currentPrintZoom + 0.1));
+      if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => setPrintZoom(currentPrintZoom - 0.1));
+      if (zoomFitBtn) zoomFitBtn.addEventListener('click', fitPrintZoom);
+
+      // Trigger Print Action
+      if (triggerPrintBtn) {
+        triggerPrintBtn.addEventListener('click', () => {
+          const count = a4PrintSheet ? a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item').length : 0;
+          if (count === 0) {
+            alert('প্রিন্ট করার জন্য অন্তত একটি ছবি শিটে যোগ করুন। বাম পাশের কুইক অ্যাড বাটন থেকে +১ বা +৪ ক্লিক করুন।');
+            return;
+          }
+          window.print();
+        });
+      }
+
+      // Download PDF Action
+      if (downloadPdfBtn) {
+        downloadPdfBtn.addEventListener('click', () => {
+          const count = a4PrintSheet ? a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item').length : 0;
+          if (count === 0) {
+            alert('পিডিএফ তৈরির জন্য অন্তত একটি ছবি শিটে যোগ করুন।');
+            return;
+          }
+          alert('টিপস: ব্রাউজারের প্রিন্ট ডায়ালগ ওপেন হলে Destination থেকে "Save as PDF" (বা পিডিএফ হিসেবে সংরক্ষণ) নির্বাচন করে Save বাটনে ক্লিক করুন।');
+          window.print();
+        });
+      }
+
+      // Open / Close Modal Logic
+      function openPrintModal() {
+        const photo = processedImageSrc || originalImageSrc;
+        if (!photo) {
+          alert('ছবি প্রিন্ট করার আগে অনুগ্রহ করে একটি ছবি আপলোড ও প্রস্তুত করুন।');
+          return;
+        }
+
+        if (processedImageSrc) {
+          addRecentPhoto(processedImageSrc, sizeNames[currentSettings.size] || 'পাসপোর্ট');
+        } else if (originalImageSrc) {
+          addRecentPhoto(originalImageSrc, 'মূল ছবি');
+        }
+
+        renderRecentPhotos();
+
+        // If sheet is empty, auto-add 4 passport copies for instant convenience
+        if (a4PrintSheet && a4PrintSheet.querySelectorAll('.print-photo-wrapper, .print-photo-item').length === 0) {
+          addPhotosToSheet('passport', 4);
+        }
+
+        if (printModalBackdrop) printModalBackdrop.classList.remove('d-none');
+        if (printModal) printModal.classList.remove('d-none');
+        document.body.style.overflow = 'hidden';
+
+        setTimeout(fitPrintZoom, 100);
+      }
+
+      function closePrintModal() {
+        if (printModalBackdrop) printModalBackdrop.classList.add('d-none');
+        if (printModal) printModal.classList.add('d-none');
+        document.body.style.overflow = '';
+      }
+
+      if (openPrintModalBtn) openPrintModalBtn.addEventListener('click', openPrintModal);
+      if (topPrintBtn) topPrintBtn.addEventListener('click', openPrintModal);
+      if (closePrintModalBtn) closePrintModalBtn.addEventListener('click', closePrintModal);
+      if (printModalBackdrop) printModalBackdrop.addEventListener('click', closePrintModal);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && printModal && !printModal.classList.contains('d-none')) {
+          closePrintModal();
+        }
+      });
+
+      // =========================================================================
+      // 7. RECENT EDITED PHOTOS (সাম্প্রতিক এডিট করা ছবি) GALLERY LOGIC
+      // =========================================================================
+      const recentGallerySlider = document.getElementById('recentGallerySlider');
+      const recentGalleryPrevBtn = document.getElementById('recentGalleryPrevBtn');
+      const recentGalleryNextBtn = document.getElementById('recentGalleryNextBtn');
+      const recentBadgeCount = document.getElementById('recentBadgeCount');
+      const recentViewAllBtn = document.getElementById('recentViewAllBtn');
+      const recentSettingsBtn = document.getElementById('recentSettingsBtn');
+
+      // Scroll left and right buttons
+      if (recentGalleryPrevBtn && recentGallerySlider) {
+        recentGalleryPrevBtn.addEventListener('click', () => {
+          recentGallerySlider.scrollBy({ left: -240, behavior: 'smooth' });
+        });
+      }
+      if (recentGalleryNextBtn && recentGallerySlider) {
+        recentGalleryNextBtn.addEventListener('click', () => {
+          recentGallerySlider.scrollBy({ left: 240, behavior: 'smooth' });
+        });
+      }
+
+      // Drag to scroll for horizontal slider
+      if (recentGallerySlider) {
+        let isDown = false;
+        let startX;
+        let scrollLeft;
+
+        recentGallerySlider.addEventListener('mousedown', (e) => {
+          isDown = true;
+          startX = e.pageX - recentGallerySlider.offsetLeft;
+          scrollLeft = recentGallerySlider.scrollLeft;
+        });
+        recentGallerySlider.addEventListener('mouseleave', () => {
+          isDown = false;
+        });
+        recentGallerySlider.addEventListener('mouseup', () => {
+          isDown = false;
+        });
+        recentGallerySlider.addEventListener('mousemove', (e) => {
+          if (!isDown) return;
+          e.preventDefault();
+          const x = e.pageX - recentGallerySlider.offsetLeft;
+          const walk = (x - startX) * 1.5;
+          recentGallerySlider.scrollLeft = scrollLeft - walk;
+        });
+      }
+
+      // Click card to preview & load into editor and print
+      function attachRecentPhotoCardClick(card, url) {
+        card.addEventListener('click', () => {
+          processedImageSrc = url;
+          mainCanvasImg.src = url;
+          isShowingOriginal = false;
+
+          canvasEmptyState.classList.add('d-none');
+          canvasDisplayState.classList.remove('d-none');
+          cropperStage.classList.add('d-none');
+          studioPhotoBox.classList.remove('d-none');
+          canvasActionToolbar.classList.remove('d-none');
+          canvasBottomBar.classList.remove('d-none');
+          compareToggleBtn.classList.add('d-none');
+          recropBtn.classList.add('d-none');
+          if (topPrintBtn) topPrintBtn.classList.remove('d-none');
+
+          studioDownloadBtn.href = url;
+          studioDownloadBtn.download = url.split('/').pop() || 'passport_photo.jpg';
+
+          addRecentPhoto(url, 'সাম্প্রতিক ফটো');
+
+          // Smooth scroll to studio photo preview box
+          const displayElem = document.getElementById('canvasDisplayState');
+          if (displayElem) {
+            displayElem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
+
+      // Attach click to existing cards rendered via server template
+      document.querySelectorAll('.recent-photo-card').forEach(card => {
+        const img = card.querySelector('img');
+        if (img && img.src) {
+          attachRecentPhotoCardClick(card, img.src);
+        }
+      });
+
+      // Prepend dynamic new card when a photo is newly generated
+      function prependRecentGalleryCard(url, filename) {
+        if (!recentGallerySlider || !url) return;
+        const emptyState = document.getElementById('recentEmptyState');
+        if (emptyState) emptyState.remove();
+
+        const card = document.createElement('div');
+        card.className = 'recent-photo-card';
+        card.dataset.filename = filename || '';
+        card.title = 'ক্লিক করে প্রিভিউ ও প্রিন্ট করুন';
+        card.innerHTML = `
+          <img src="${url}" alt="এডিট করা ছবি">
+          <div class="recent-photo-overlay">
+            <i class="bi bi-eye-fill"></i>
+          </div>
+        `;
+        attachRecentPhotoCardClick(card, url);
+        recentGallerySlider.prepend(card);
+
+        if (recentBadgeCount) {
+          const total = recentGallerySlider.querySelectorAll('.recent-photo-card').length;
+          recentBadgeCount.textContent = `${total} টি`;
+        }
+      }
+
+      // Action buttons
+      if (recentViewAllBtn) {
+        recentViewAllBtn.addEventListener('click', () => {
+          if (recentGallerySlider) {
+            recentGallerySlider.scrollTo({ left: 0, behavior: 'smooth' });
+          }
+        });
+      }
+
+      if (recentSettingsBtn) {
+        recentSettingsBtn.addEventListener('click', () => {
+          alert('সাম্প্রতিক গ্যালারি: এখানে স্বয়ংক্রিয়ভাবে আপনার এডিটকৃত সর্বশেষ ছবিগুলো সংরক্ষিত থাকে। যে কোনো ছবিতে ক্লিক করে পুনরায় প্রিভিউ বা প্রিন্ট করতে পারেন।');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

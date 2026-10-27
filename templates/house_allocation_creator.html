@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>বসতঘর ক্ষতিগ্রস্ত হওয়ায় একটি বসতঘর বরাদ্দের আবেদন প্রসঙ্গে</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      height: 60px;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      z-index: 10;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .nav-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-title .pipe {
+      color: #ff9800;
+      font-weight: 800;
+    }
+
+    /* ==================== SPLIT-SCREEN LAYOUT ==================== */
+    .split-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* 1. LEFT PANEL (INPUT FORM) */
+    .left-panel {
+      width: 450px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .panel-header i {
+      color: #ff9800;
+    }
+
+    .form-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .form-section-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      margin-top: 14px;
+      margin-bottom: 10px;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .form-section-title:first-child {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: #ff9800;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+    }
+
+    textarea.form-control {
+      resize: vertical;
+      min-height: 58px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .panel-footer {
+      padding: 16px 20px;
+      background: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-submit-print {
+      flex: 1;
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14.5px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-submit-print:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reset {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* 2. RIGHT PANEL (LIVE A4 PREVIEW) */
+    .right-panel {
+      flex: 1;
+      background: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 30px;
+      align-items: center;
+    }
+
+    /* Standard A4 Paper Container */
+    .a4-container {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 25mm 22mm;
+      margin: 0 auto;
+      border-radius: 2px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Editable Chips / Highlight Styling */
+    .highlight {
+      background-color: #dcfce7;
+      color: #166534;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      display: inline-block;
+      border-bottom: 1px dashed #22c55e;
+      transition: all 0.15s ease-in-out;
+    }
+
+    /* ==================== PRINT STYLES ==================== */
+    @media print {
+      body {
+        background: #ffffff !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .top-navbar,
+      .left-panel {
+        display: none !important;
+      }
+
+      .split-container {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .right-panel {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-container {
+        width: 100% !important;
+        max-width: 210mm !important;
+        min-height: 297mm !important;
+        box-shadow: none !important;
+        padding: 20mm 18mm !important;
+        margin: 0 auto !important;
+        border-radius: 0 !important;
+      }
+
+      .highlight {
+        background-color: transparent !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #000000 !important;
+      }
+    }
+
+    @media (max-width: 992px) {
+      body {
+        overflow: auto;
+      }
+      .split-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .left-panel {
+        width: 100%;
+        height: auto;
+      }
+      .right-panel {
+        padding: 16px 8px;
+      }
+      .a4-container {
+        width: 100%;
+        min-height: auto;
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="nav-left">
+      <a href="{{ url_for('manual_documents') }}" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>ডকুমেন্ট তালিকা</span>
+      </a>
+      <div class="nav-title">
+        <span class="pipe">|</span>
+        <span>বসতঘর ক্ষতিগ্রস্ত হওয়ায় একটি বসতঘর বরাদ্দের আবেদন প্রসঙ্গে</span>
+      </div>
+    </div>
+    <div>
+      <button type="button" class="btn-submit-print" onclick="window.print()">
+        <i class="fa-solid fa-print"></i>
+        <span>প্রিন্ট করুন</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Split Screen Workspace -->
+  <main class="split-container">
+
+    <!-- 1. LEFT PANEL: INPUT FORM -->
+    <aside class="left-panel">
+      <div class="panel-header">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>তথ্য পূরণ ফরম (১৭ টি ফিল্ড)</span>
+      </div>
+
+      <div class="form-scroll-area">
+        <!-- ১. আবেদন পত্রের শীর্ষ তথ্য -->
+        <div class="form-section-title">১. আবেদন পত্রের তথ্য ও প্রাপক</div>
+
+        <div class="form-group">
+          <label for="field_date">আবেদনের তারিখ</label>
+          <input type="text" id="field_date" class="form-control" value="০৫/১০/২০২৩" placeholder="উদাঃ ০৫/১০/২০২৩">
+        </div>
+
+        <div class="form-group">
+          <label for="field_recipient_designation">প্রাপকের পদবি</label>
+          <input type="text" id="field_recipient_designation" class="form-control" value="উপজেলা নির্বাহী কর্মকর্তা" placeholder="উদাঃ উপজেলা নির্বাহী কর্মকর্তা">
+        </div>
+
+        <div class="form-group">
+          <label for="field_office_name">দপ্তর / অফিসের নাম</label>
+          <input type="text" id="field_office_name" class="form-control" value="সার্ভিসেস এন্ড সাপোর্ট সেন্টার" placeholder="উদাঃ সার্ভিসেস এন্ড সাপোর্ট সেন্টার">
+        </div>
+
+        <div class="form-group">
+          <label for="field_office_address">অফিসের ঠিকানা</label>
+          <input type="text" id="field_office_address" class="form-control" value="মোল্লারচর, সোনারগাঁও, নারায়ণগঞ্জ" placeholder="উদাঃ মোল্লারচর, সোনারগাঁও, নারায়ণগঞ্জ">
+        </div>
+
+        <!-- ২. আবেদনকারীর বিবরণ -->
+        <div class="form-section-title">২. আবেদনকারী ও এলাকার বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_applicant_name">আবেদনকারীর পূর্ণ নাম *</label>
+          <input type="text" id="field_applicant_name" class="form-control" value="আবদুল্লাহ সিদ্দিকী" placeholder="উদাঃ আবদুল্লাহ সিদ্দিকী">
+        </div>
+
+        <div class="form-group">
+          <label for="field_father_name">পিতার নাম</label>
+          <input type="text" id="field_father_name" class="form-control" value="মোহাম্মদ সেলিম" placeholder="উদাঃ মোহাম্মদ সেলিম">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_union_name">ইউনিয়ন</label>
+            <input type="text" id="field_union_name" class="form-control" value="কদমতলী ইউনিয়ন" placeholder="উদাঃ কদমতলী ইউনিয়ন">
+          </div>
+          <div class="form-group">
+            <label for="field_ward_no">ওয়ার্ড নং</label>
+            <input type="text" id="field_ward_no" class="form-control" value="০৩" placeholder="উদাঃ ০৩">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_village">গ্রাম</label>
+            <input type="text" id="field_village" class="form-control" value="মোল্লারচর" placeholder="উদাঃ মোল্লারচর">
+          </div>
+          <div class="form-group">
+            <label for="field_post_office">ডাকঘর</label>
+            <input type="text" id="field_post_office" class="form-control" value="মোল্লারচর ডাকঘর" placeholder="উদাঃ মোল্লারচর ডাকঘর">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_upazila">উপজেলা</label>
+            <input type="text" id="field_upazila" class="form-control" value="সোনারগাঁও উপজেলা" placeholder="উদাঃ সোনারগাঁও উপজেলা">
+          </div>
+          <div class="form-group">
+            <label for="field_district">জেলা</label>
+            <input type="text" id="field_district" class="form-control" value="নারায়ণগঞ্জ জেলা" placeholder="উদাঃ নারায়ণগঞ্জ জেলা">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="field_mobile_no">মোবাইল নম্বর</label>
+          <input type="text" id="field_mobile_no" class="form-control" value="০১৭১২৩৪৫৬৭৮" placeholder="উদাঃ ০১৭১২৩৪৫৬৭৮">
+        </div>
+
+        <!-- ৩. দুর্যোগ ও ক্ষতির বিবরণ -->
+        <div class="form-section-title">৩. দুর্যোগ ও ক্ষতির বিবরণ</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_incident_date">দুর্যোগের তারিখ</label>
+            <input type="text" id="field_incident_date" class="form-control" value="০২/১০/২০২৩" placeholder="উদাঃ ০২/১০/২০২৩">
+          </div>
+          <div class="form-group">
+            <label for="field_cause_of_damage">ক্ষতির কারণ</label>
+            <input type="text" id="field_cause_of_damage" class="form-control" value="বৃষ্টি ও জলাবদ্ধতা" placeholder="উদাঃ বৃষ্টি ও জলাবদ্ধতা">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="field_damage_details">দুর্যোগে অন্যান্য ক্ষতির বিবরণ</label>
+          <textarea id="field_damage_details" class="form-control" rows="2" placeholder="ক্ষতির বিস্তারিত বিবরণ লিখুন">বৃষ্টির কারণে প্রচুর ফসল নষ্ট হয়েছে এবং বাড়ির আসবাবপত্রে জল ঢুকে গেছে।</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="field_current_condition">পরিবারের বর্তমান অবস্থা</label>
+          <textarea id="field_current_condition" class="form-control" rows="2" placeholder="বর্তমান অবস্থা লিখুন">বর্তমানে বাসস্থানটি পানির নিচে রয়েছে এবং অতি জরুরি ভিত্তিতে মেরামতের প্রয়োজন।</textarea>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="panel-footer">
+        <button type="button" class="btn-submit-print" id="btnSubmitPrint">
+          <i class="fa-solid fa-print"></i>
+          <span>ডকুমেন্ট প্রিন্ট করুন</span>
+        </button>
+        <button type="button" class="btn-reset" id="btnResetFields" title="রিসেট করুন">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. RIGHT PANEL: LIVE A4 PREVIEW -->
+    <section class="right-panel">
+      <div class="a4-container" id="a4DocumentPaper">
+        
+        <!-- EXACT BENGALI HTML STRUCTURE AS REQUESTED -->
+        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.6; color: #000;">
+          <p>তারিখঃ <span class="highlight input-date">০৫/১০/২০২৩</span> ইং</p>
+          <br>
+          <p>বরাবর,<br>
+          <span class="highlight input-recipient_designation">উপজেলা নির্বাহী কর্মকর্তা</span><br>
+          <span class="highlight input-office_name">সার্ভিসেস এন্ড সাপোর্ট সেন্টার</span><br>
+          <span class="highlight input-office_address">মোল্লারচর, সোনারগাঁও, নারায়ণগঞ্জ</span>।</p>
+          <br>
+          <p>বিষয়ঃ বসতঘর ক্ষতিগ্রস্ত হওয়ায় একটি বসতঘর বরাদ্দের আবেদন প্রসঙ্গে।</p>
+          <br>
+          <p>মহোদয়,</p>
+          <p style="text-align: justify; line-height: 2.2;">
+            যথাযথ সম্মান প্রদর্শনপূর্বক বিনীত নিবেদন এই যে, আমি নিম্ন স্বাক্ষরকারী <span class="highlight input-applicant_name">আবদুল্লাহ সিদ্দিকী</span>, 
+            <span class="highlight input-union_name">কদমতলী ইউনিয়ন</span> ইউনিয়নের 
+            <span class="highlight input-ward_no">০৩</span> নং ওয়ার্ডের 
+            <span class="highlight input-village">মোল্লারচর</span> গ্রামের একজন স্থায়ী বাসিন্দা। 
+            বিগত <span class="highlight input-incident_date">০২/১০/২০২৩</span> ইং তারিখে সংঘটিত 
+            <span class="highlight input-cause_of_damage">বৃষ্টি ও জলাবদ্ধতা</span> এর কারণে আমার বসতঘর মারাত্মকভাবে ক্ষতিগ্রস্ত ও সম্পূর্ণ ধ্বংস হয়ে যায়।
+          </p>
+          <p style="text-align: justify; line-height: 2.2; margin-top: 15px;">
+            এছাড়াও উক্ত দুর্যোগে <span class="highlight input-damage_details">বৃষ্টির কারণে প্রচুর ফসল নষ্ট হয়েছে এবং বাড়ির আসবাবপত্রে জল ঢুকে গেছে।</span>। 
+            জনাবের অবগতির জন্য জানানো প্রয়োজন যে, বসতঘরটি ক্ষতিগ্রস্ত হওয়ার পর থেকে অদ্যাবধি আমার পক্ষে নতুন ঘর নির্মাণ করা সম্ভব হয়নি। বর্তমানে আমি ও আমার পরিবার 
+            <span class="highlight input-current_condition">বর্তমানে বাসস্থানটি পানির নিচে রয়েছে এবং অতি জরুরি ভিত্তিতে মেরামতের প্রয়োজন।</span> অবস্থায় অত্যন্ত মানবেতর জীবনযাপন করিতেছি।
+          </p>
+          <p style="text-align: justify; line-height: 2.2; margin-top: 15px;">
+            এমতাবস্থায়, আপনার মাধ্যমে সরকারি সহায়তায় একটি বসতঘর বরাদ্দ পেলে আমি ও আমার পরিবার বিশেষভাবে উপকৃত হবো। 
+            অতএব, মহোদয়, উপরোক্ত বিষয়সমূহ সহানুভূতির সহিত বিবেচনা করে প্রয়োজনীয় ব্যবস্থা গ্রহণ করিলে আপনার নিকট চিরকৃতজ্ঞ থাকিব।
+          </p>
+          
+          <div style="margin-top: 40px; line-height: 1.8;">
+            <p>নিবেদক</p>
+            <p>নামঃ <span class="highlight input-applicant_name">আবদুল্লাহ সিদ্দিকী</span></p>
+            <p>পিতাঃ <span class="highlight input-father_name">মোহাম্মদ সেলিম</span></p>
+            <p>গ্রামঃ <span class="highlight input-village">মোল্লারচর</span>,</p>
+            <p>ওয়ার্ড নং <span class="highlight input-ward_no">০৩</span></p>
+            <p>ডাকঘরঃ <span class="highlight input-post_office">মোল্লারচর ডাকঘর</span></p>
+            <p>উপজেলাঃ <span class="highlight input-upazila">সোনারগাঁও উপজেলা</span></p>
+            <p>জেলাঃ <span class="highlight input-district">নারায়ণগঞ্জ জেলা</span></p>
+            <p>মোবাইলঃ <span class="highlight input-mobile_no">০১৭১২৩৪৫৬৭৮</span></p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. VANILLA JAVASCRIPT: REAL-TIME MULTI-ELEMENT SYNC -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 17 Form Fields
+      const fieldIds = [
+        'date',
+        'recipient_designation',
+        'office_name',
+        'office_address',
+        'applicant_name',
+        'union_name',
+        'ward_no',
+        'village',
+        'incident_date',
+        'cause_of_damage',
+        'damage_details',
+        'current_condition',
+        'father_name',
+        'post_office',
+        'upazila',
+        'district',
+        'mobile_no'
+      ];
+
+      // Store initial default values for reset
+      const defaultValues = {};
+
+      fieldIds.forEach(id => {
+        const inputElem = document.getElementById('field_' + id);
+        // Find ALL matching spans with class .input-{id} (handles duplicate occurrences)
+        const targetSpans = document.querySelectorAll('.input-' + id);
+
+        if (inputElem && targetSpans.length > 0) {
+          defaultValues[id] = inputElem.value;
+
+          // Function to sync input value to ALL corresponding spans simultaneously
+          const syncField = function () {
+            const val = inputElem.value.trim();
+            targetSpans.forEach(span => {
+              if (val) {
+                span.textContent = val;
+              } else {
+                // Fallback indicator when input is cleared
+                span.textContent = '[' + (inputElem.placeholder || id) + ']';
+              }
+            });
+          };
+
+          // Attach live event listeners (input, keyup, change)
+          inputElem.addEventListener('input', syncField);
+          inputElem.addEventListener('keyup', syncField);
+          inputElem.addEventListener('change', syncField);
+        }
+      });
+
+      // Submit / Print Button
+      const btnPrint = document.getElementById('btnSubmitPrint');
+      if (btnPrint) {
+        btnPrint.addEventListener('click', function () {
+          window.print();
+        });
+      }
+
+      // Reset Button: Restores initial pre-filled values
+      const btnReset = document.getElementById('btnResetFields');
+      if (btnReset) {
+        btnReset.addEventListener('click', function () {
+          fieldIds.forEach(id => {
+            const inputElem = document.getElementById('field_' + id);
+            const targetSpans = document.querySelectorAll('.input-' + id);
+            if (inputElem && targetSpans.length > 0 && defaultValues[id] !== undefined) {
+              inputElem.value = defaultValues[id];
+              targetSpans.forEach(span => {
+                span.textContent = defaultValues[id];
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

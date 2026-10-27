@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>সাহায্যের জন্য প্রত্যয়ন পত্র - ডকুমেন্ট তৈরি করুন</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root {
+      --primary-teal: #135E7D;
+      --accent-orange: #FF9800;
+      --bg-light: #f1f5f9;
+      --border-color: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      height: 60px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      z-index: 10;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .nav-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-title .pipe {
+      color: var(--accent-orange);
+      font-weight: 800;
+    }
+
+    /* Split-Screen Main Layout */
+    .split-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* ==================== LEFT PANEL (INPUT FORM) ==================== */
+    .left-panel {
+      width: 440px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .panel-header i {
+      color: var(--accent-orange);
+    }
+
+    .form-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: var(--accent-orange);
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .panel-footer {
+      padding: 16px 20px;
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-submit-print {
+      flex: 1;
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14.5px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-submit-print:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reset {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* ==================== RIGHT PANEL (LIVE A4 PREVIEW) ==================== */
+    .right-panel {
+      flex: 1;
+      background: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 30px;
+      align-items: center;
+    }
+
+    /* A4 Paper Container */
+    .a4-container {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 25mm 22mm;
+      margin: 0 auto;
+      border-radius: 2px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Target Document Formatting */
+    .doc-title {
+      text-align: center;
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-body-paragraph {
+      line-height: 2.2;
+      text-align: justify;
+      font-size: 16px;
+      color: #1e293b;
+    }
+
+    .doc-footer-paragraph {
+      font-size: 16px;
+      color: #1e293b;
+      margin-top: 15px;
+    }
+
+    /* Editable Chips / Highlight Styling */
+    .highlight {
+      background-color: #dcfce7;
+      color: #166534;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      display: inline-block;
+      border-bottom: 1px dashed #22c55e;
+      transition: all 0.15s ease-in-out;
+    }
+
+    .highlight.is-edited {
+      background-color: transparent;
+      color: #0f172a;
+      border-bottom: 1.5px solid #0f766e;
+      border-radius: 0;
+      padding: 0 2px;
+    }
+
+    /* Signature area at bottom of paper */
+    .signatures-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 60px;
+      padding-top: 20px;
+    }
+
+    .sig-block {
+      text-align: center;
+      min-width: 160px;
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .sig-dots {
+      letter-spacing: 2px;
+      margin-bottom: 6px;
+      color: #94a3b8;
+    }
+
+    .sig-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    /* ==================== PRINT STYLES ==================== */
+    @media print {
+      body {
+        background: #ffffff !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .top-navbar,
+      .left-panel {
+        display: none !important;
+      }
+
+      .split-container {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .right-panel {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-container {
+        width: 100% !important;
+        max-width: 210mm !important;
+        min-height: 297mm !important;
+        box-shadow: none !important;
+        padding: 20mm 18mm !important;
+        margin: 0 auto !important;
+        border-radius: 0 !important;
+      }
+
+      .highlight {
+        background-color: transparent !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #000000 !important;
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 992px) {
+      body {
+        overflow: auto;
+      }
+      .split-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .left-panel {
+        width: 100%;
+        height: auto;
+      }
+      .right-panel {
+        padding: 16px 8px;
+      }
+      .a4-container {
+        width: 100%;
+        min-height: auto;
+        padding: 20px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="nav-left">
+      <a href="{{ url_for('manual_documents') }}" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>ডকুমেন্ট তালিকা</span>
+      </a>
+      <div class="nav-title">
+        <span class="pipe">|</span>
+        <span>সাহায্যের জন্য প্রত্যয়ন পত্র</span>
+      </div>
+    </div>
+    <div>
+      <button type="button" class="btn-submit-print" onclick="window.print()">
+        <i class="fa-solid fa-print"></i>
+        <span>প্রিন্ট করুন</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Split Screen Workspace -->
+  <main class="split-container">
+
+    <!-- 1. LEFT PANEL (INPUT FORM) -->
+    <aside class="left-panel">
+      <div class="panel-header">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>তথ্য পূরণ ফরম (১৬ টি ফিল্ড)</span>
+      </div>
+
+      <div class="form-scroll-area">
+        <!-- applicant_name -->
+        <div class="form-group">
+          <label for="applicant_name">আবেদনকারীর পূর্ণ নাম</label>
+          <input type="text" id="applicant_name" class="form-control" value="মোহাম্মদ হাসান" placeholder="আবেদনকারীর নাম লিখুন">
+        </div>
+
+        <!-- father_name & mother_name -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="father_name">পিতার নাম</label>
+            <input type="text" id="father_name" class="form-control" value="মোহাম্মদ আলী" placeholder="পিতার নাম লিখুন">
+          </div>
+          <div class="form-group">
+            <label for="mother_name">মাতার নাম</label>
+            <input type="text" id="mother_name" class="form-control" value="ফাতেমা বেগম" placeholder="মাতার নাম লিখুন">
+          </div>
+        </div>
+
+        <!-- village & post_office -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="village">গ্রাম</label>
+            <input type="text" id="village" class="form-control" value="শাহপুর" placeholder="গ্রামের নাম">
+          </div>
+          <div class="form-group">
+            <label for="post_office">ডাকঘর</label>
+            <input type="text" id="post_office" class="form-control" value="শাহপুর ডাকঘর" placeholder="ডাকঘর">
+          </div>
+        </div>
+
+        <!-- thana & district -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="thana">থানা</label>
+            <input type="text" id="thana" class="form-control" value="বঙ্গবন্ধু থানার" placeholder="থানা">
+          </div>
+          <div class="form-group">
+            <label for="district">জেলা</label>
+            <input type="text" id="district" class="form-control" value="ময়মনসিংহ" placeholder="জেলা">
+          </div>
+        </div>
+
+        <!-- ward_no -->
+        <div class="form-group">
+          <label for="ward_no">ওয়ার্ড নং</label>
+          <input type="text" id="ward_no" class="form-control" value="ওয়ার্ড নং ৫" placeholder="ওয়ার্ড নং">
+        </div>
+
+        <!-- child_name & school_name -->
+        <div class="form-group">
+          <label for="child_name">পুত্র/কন্যার নাম</label>
+          <input type="text" id="child_name" class="form-control" value="মোহাম্মদ হাসান" placeholder="সন্তানের নাম">
+        </div>
+
+        <div class="form-group">
+          <label for="school_name">বিদ্যালয় / শিক্ষা প্রতিষ্ঠানের নাম</label>
+          <input type="text" id="school_name" class="form-control" value="শাহপুর উচ্চ বিদ্যালয়" placeholder="বিদ্যালয়ের নাম">
+        </div>
+
+        <!-- class_name, section & roll_no -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="class_name">শ্রেণী</label>
+            <input type="text" id="class_name" class="form-control" value="১০ম শ্রেণী" placeholder="শ্রেণী">
+          </div>
+          <div class="form-group">
+            <label for="section">শাখা</label>
+            <input type="text" id="section" class="form-control" value="বিজ্ঞান শাখা" placeholder="শাখা">
+          </div>
+          <div class="form-group">
+            <label for="roll_no">ক্রমিক / রোল নং</label>
+            <input type="text" id="roll_no" class="form-control" value="১৫" placeholder="রোল">
+          </div>
+        </div>
+
+        <!-- total_members & student_count -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="total_members">সংসারের মোট সদস্য সংখ্যা</label>
+            <input type="text" id="total_members" class="form-control" value="৫" placeholder="সদস্য সংখ্যা">
+          </div>
+          <div class="form-group">
+            <label for="student_count">অধ্যয়নরত সন্তানের সংখ্যা</label>
+            <input type="text" id="student_count" class="form-control" value="৩" placeholder="ছাত্র সংখ্যা">
+          </div>
+        </div>
+
+        <!-- reason -->
+        <div class="form-group">
+          <label for="reason">আর্থিক সংকটের কারণ</label>
+          <input type="text" id="reason" class="form-control" value="বন্যা ও ফসলের ক্ষতি" placeholder="সংকটের কারণ লিখুন">
+        </div>
+      </div>
+
+      <!-- Action Buttons at bottom of left panel -->
+      <div class="panel-footer">
+        <button type="button" class="btn-submit-print" id="btnSubmitPrint">
+          <i class="fa-solid fa-print"></i>
+          <span>ডকুমেন্ট প্রিন্ট করুন</span>
+        </button>
+        <button type="button" class="btn-reset" id="btnResetFields" title="রিসেট করুন">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. RIGHT PANEL (LIVE A4 PREVIEW) -->
+    <section class="right-panel">
+      <div class="a4-container" id="a4DocumentPaper">
+        
+        <h2 style="text-align: center; font-weight: bold; margin-bottom: 30px;">প্রত্যয়ন পত্র</h2>
+        
+        <p style="line-height: 2.2; text-align: justify; font-size: 16px;">
+          এই মর্মে প্রত্যয়ন করা যাইতেছে যে, - <span id="preview_applicant_name" class="highlight">মোহাম্মদ হাসান</span>, 
+          পিতাঃ <span id="preview_father_name" class="highlight">মোহাম্মদ আলী</span>, 
+          মাতাঃ <span id="preview_mother_name" class="highlight">ফাতেমা বেগম</span>, 
+          বর্তমান ঠিকানাঃ গ্রামঃ <span id="preview_village" class="highlight">শাহপুর</span>, 
+          পোঃ <span id="preview_post_office" class="highlight">শাহপুর ডাকঘর</span>, 
+          থানাঃ <span id="preview_thana" class="highlight">বঙ্গবন্ধু থানার</span>, 
+          জেলাঃ <span id="preview_district" class="highlight">ময়মনসিংহ</span>, 
+          আমার নিকট পরিচিত। তিনি অত্র <span id="preview_ward_no" class="highlight">ওয়ার্ড নং ৫</span> -এর একজন স্থায়ী বাসিন্দা। 
+          তাহার পুত্র/কন্যা <span id="preview_child_name" class="highlight">মোহাম্মদ হাসান</span>, 
+          <span id="preview_school_name" class="highlight">শাহপুর উচ্চ বিদ্যালয়</span> - এর 
+          <span id="preview_class_name" class="highlight">১০ম শ্রেণী</span> শ্রেণীর একজন নিয়মিত ছাত্র/ছাত্রী। 
+          শাখা- <span id="preview_section" class="highlight">বিজ্ঞান শাখা</span>, 
+          ক্রমিক নং <span id="preview_roll_no" class="highlight">১৫</span>। 
+          আমার জানামতে তাহার সংসারের সদস্য সংখ্যা <span id="preview_total_members" class="highlight">৫</span> জন। 
+          মোট <span id="preview_student_count" class="highlight">৩</span> জন সন্তান বিদ্যালয়ে লেখাপড়া করে। 
+          তিনি পরিবারে একমাত্র উপার্জনকারী ব্যক্তি। <span id="preview_reason" class="highlight">বন্যা ও ফসলের ক্ষতি</span> 
+          এর কারণে বর্তমানে তিনি সন্তানদের লেখাপড়ার খরচ এবং সংসারের ব্যয় নির্বাহ করিতে অত্যন্ত কষ্টসাধ্য অবস্থার মধ্যে আছেন। 
+          তাহার সন্তানদের লেখাপড়ার বিষয়ে যেকোন প্রকার সহযোগিতা প্রদানের জন্য আমি জোর সুপারিশ করিতেছি।
+        </p>
+
+        <br>
+        <p style="font-size: 16px;">আমি তাহার সর্বাঙ্গীন মঙ্গল কামনা করি।</p>
+
+        <!-- Official Seal / Signature Area -->
+        <div class="signatures-row">
+          <div class="sig-block">
+            <div class="sig-dots">...................................</div>
+            <div class="sig-name">প্রার্থীর স্বাক্ষর</div>
+          </div>
+          <div class="sig-block">
+            <div class="sig-dots">...................................</div>
+            <div class="sig-name">চেয়ারম্যান / কাউন্সিলর</div>
+            <div>স্বাক্ষর ও অফিশিয়াল সিলমোহর</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. VANILLA JAVASCRIPT LOGIC -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // List of all 16 target field IDs
+      const fieldIds = [
+        'applicant_name',
+        'father_name',
+        'mother_name',
+        'village',
+        'post_office',
+        'thana',
+        'district',
+        'ward_no',
+        'child_name',
+        'school_name',
+        'class_name',
+        'section',
+        'roll_no',
+        'total_members',
+        'student_count',
+        'reason'
+      ];
+
+      // Default initial values map
+      const defaultValues = {};
+
+      fieldIds.forEach(id => {
+        const inputElem = document.getElementById(id);
+        const previewElem = document.getElementById('preview_' + id);
+
+        if (inputElem && previewElem) {
+          // Record initial value
+          defaultValues[id] = inputElem.value;
+
+          // Function to sync input value to preview span
+          const syncField = function () {
+            const val = inputElem.value.trim();
+            if (val) {
+              previewElem.textContent = val;
+              previewElem.classList.remove('is-empty');
+              // Highlight remains or becomes slightly prominent
+            } else {
+              // Show fallback prompt if user clears the input
+              previewElem.textContent = '[' + (inputElem.placeholder || id) + ']';
+              previewElem.classList.add('is-empty');
+            }
+          };
+
+          // Attach live listeners (input, keyup, change)
+          inputElem.addEventListener('input', syncField);
+          inputElem.addEventListener('keyup', syncField);
+          inputElem.addEventListener('change', syncField);
+        }
+      });
+
+      // Submit / Print Button
+      const btnPrint = document.getElementById('btnSubmitPrint');
+      if (btnPrint) {
+        btnPrint.addEventListener('click', function () {
+          window.print();
+        });
+      }
+
+      // Reset Button: Restores initial pre-filled values
+      const btnReset = document.getElementById('btnResetFields');
+      if (btnReset) {
+        btnReset.addEventListener('click', function () {
+          fieldIds.forEach(id => {
+            const inputElem = document.getElementById(id);
+            const previewElem = document.getElementById('preview_' + id);
+            if (inputElem && previewElem && defaultValues[id] !== undefined) {
+              inputElem.value = defaultValues[id];
+              previewElem.textContent = defaultValues[id];
+              previewElem.classList.remove('is-empty');
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

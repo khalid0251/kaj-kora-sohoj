@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ফর্ম ফিলাপের অনুমতির জন্য আবেদন - কাজ করা সহজ</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', Arial, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    .top-navbar {
+      height: 60px;
+      background: #ffffff;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+      z-index: 10;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      color: #334155;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn-back:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .nav-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-title .pipe {
+      color: #ff9800;
+      font-weight: 800;
+    }
+
+    .nav-badge-doc {
+      font-size: 12px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    /* ==================== SPLIT-SCREEN LAYOUT ==================== */
+    .split-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    /* 1. LEFT PANEL (INPUT FORM) */
+    .left-panel {
+      width: 470px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .panel-header {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+    }
+
+    .panel-header i {
+      color: #ff9800;
+    }
+
+    .form-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .form-section-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #0f766e;
+      background: #f0fdfa;
+      padding: 6px 10px;
+      border-radius: 6px;
+      margin-top: 18px;
+      margin-bottom: 12px;
+      border-left: 3px solid #0f766e;
+    }
+
+    .form-section-title:first-child {
+      margin-top: 0;
+    }
+
+    .form-group {
+      margin-bottom: 13px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 13.5px;
+      font-family: inherit;
+      color: #0f172a;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      background: #ffffff;
+      border-color: #ff9800;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .panel-footer {
+      padding: 16px 20px;
+      background: #ffffff;
+      border-top: 1px solid #cbd5e1;
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn-submit-print {
+      flex: 1;
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14.5px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+      transition: all 0.2s;
+    }
+
+    .btn-submit-print:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-reset {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-reset:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* 2. RIGHT PANEL (LIVE A4 PREVIEW) */
+    .right-panel {
+      flex: 1;
+      background: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 30px;
+      align-items: center;
+    }
+
+    /* Standard A4 Paper Container: 210mm x 297mm */
+    .a4-container {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      padding: 25mm 22mm;
+      margin: 0 auto;
+      border-radius: 2px;
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    /* Editable Chips / Highlight Styling */
+    .highlight {
+      background-color: #dcfce7;
+      color: #166534;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      display: inline-block;
+      border-bottom: 1px dashed #22c55e;
+      transition: all 0.15s ease-in-out;
+    }
+
+    /* ==================== PRINT STYLES ==================== */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 15mm;
+      }
+
+      body {
+        background: #ffffff !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .top-navbar,
+      .left-panel {
+        display: none !important;
+      }
+
+      .split-container {
+        display: block !important;
+        height: auto !important;
+        overflow: visible !important;
+      }
+
+      .right-panel {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .a4-container {
+        width: 100% !important;
+        max-width: 210mm !important;
+        min-height: auto !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        border-radius: 0 !important;
+      }
+
+      .highlight {
+        background-color: transparent !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #000000 !important;
+        padding: 0 !important;
+      }
+    }
+
+    @media (max-width: 992px) {
+      body {
+        overflow: auto;
+      }
+      .split-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .left-panel {
+        width: 100%;
+        height: auto;
+      }
+      .right-panel {
+        padding: 16px 8px;
+      }
+      .a4-container {
+        width: 100%;
+        min-height: auto;
+        padding: 20px 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-navbar">
+    <div class="nav-left">
+      <a href="{{ url_for('manual_documents') }}" class="btn-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>ডকুমেন্ট তালিকা</span>
+      </a>
+      <div class="nav-title">
+        <span class="pipe">|</span>
+        <span>ফর্ম ফিলাপের অনুমতির জন্য আবেদন</span>
+        <span class="nav-badge-doc">
+          <i class="fa-solid fa-file-signature me-1"></i>স্ট্যান্ডার্ড A4 ফরম্যাট
+        </span>
+      </div>
+    </div>
+    <div>
+      <button type="button" class="btn-submit-print" onclick="window.print()">
+        <i class="fa-solid fa-print"></i>
+        <span>প্রিন্ট করুন (A4)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Split Screen Workspace -->
+  <main class="split-container">
+
+    <!-- 1. LEFT PANEL: INPUT FORM (15 Fields) -->
+    <aside class="left-panel">
+      <div class="panel-header">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>আবেদনের তথ্য পূরণ ফরম (১৫ টি ফিল্ড)</span>
+      </div>
+
+      <div class="form-scroll-area">
+        
+        <!-- ১. প্রাপকের বিবরণ -->
+        <div class="form-section-title">১. প্রাপকের বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_recipient_designation">প্রাপকের পদবী *</label>
+          <input type="text" id="field_recipient_designation" class="form-control" value="অধ্যক্ষ" placeholder="উদাঃ অধ্যক্ষ / প্রধান শিক্ষক">
+        </div>
+
+        <div class="form-group">
+          <label for="field_institution_name">শিক্ষা প্রতিষ্ঠানের নাম *</label>
+          <input type="text" id="field_institution_name" class="form-control" value="সরকারি আজিজুল হক কলেজ" placeholder="উদাঃ সরকারি আজিজুল হক কলেজ">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_institution_upazila">উপজেলা / থানা</label>
+            <input type="text" id="field_institution_upazila" class="form-control" value="বগুড়া সদর" placeholder="উদাঃ বগুড়া সদর">
+          </div>
+          <div class="form-group">
+            <label for="field_institution_district">জেলা</label>
+            <input type="text" id="field_institution_district" class="form-control" value="বগুড়া" placeholder="উদাঃ বগুড়া">
+          </div>
+        </div>
+
+        <!-- ২. পরীক্ষার বিবরণ -->
+        <div class="form-section-title">২. পরীক্ষার বিবরণ</div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_exam_name">পরীক্ষার নাম *</label>
+            <input type="text" id="field_exam_name" class="form-control" value="এসএসসি" placeholder="উদাঃ এসএসসি / এইচএসসি">
+          </div>
+          <div class="form-group">
+            <label for="field_exam_year">পরীক্ষার সাল</label>
+            <input type="text" id="field_exam_year" class="form-control" value="২০২৩" placeholder="উদাঃ ২০২৩">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_department_name">বিভাগ / শাখা</label>
+            <input type="text" id="field_department_name" class="form-control" value="বিজ্ঞান" placeholder="উদাঃ বিজ্ঞান / মানবিক / ব্যবসায় শিক্ষা">
+          </div>
+          <div class="form-group">
+            <label for="field_failed_subjects_count">অকৃতকার্য বিষয়ের সংখ্যা</label>
+            <input type="text" id="field_failed_subjects_count" class="form-control" value="২" placeholder="উদাঃ ২">
+          </div>
+        </div>
+
+        <!-- ৩. আবেদনকারী শিক্ষার্থীর বিবরণ -->
+        <div class="form-section-title">৩. আবেদনকারী শিক্ষার্থীর বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_applicant_name">শিক্ষার্থীর নাম *</label>
+          <input type="text" id="field_applicant_name" class="form-control" value="মোহাম্মদ আরিফ" placeholder="উদাঃ মোহাম্মদ আরিফ">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_roll_number">রোল নং *</label>
+            <input type="text" id="field_roll_number" class="form-control" value="১২৩৪৫" placeholder="উদাঃ ১২৩৪৫">
+          </div>
+          <div class="form-group">
+            <label for="field_application_date">আবেদনের তারিখ</label>
+            <input type="text" id="field_application_date" class="form-control" value="১০/১০/২০২৩" placeholder="উদাঃ ১০/১০/২০২৩">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="field_applicant_mobile">শিক্ষার্থীর মোবাইল নং</label>
+          <input type="text" id="field_applicant_mobile" class="form-control" value="০১৭১২৩৪৫৬৭৮" placeholder="উদাঃ ০১৭১২৩৪৫৬৭৮">
+        </div>
+
+        <!-- ৪. অভিভাবকের বিবরণ -->
+        <div class="form-section-title">৪. অভিভাবকের বিবরণ</div>
+
+        <div class="form-group">
+          <label for="field_guardian_name">অভিভাবকের নাম</label>
+          <input type="text" id="field_guardian_name" class="form-control" value="মোহাম্মদ সালাম" placeholder="উদাঃ মোহাম্মদ সালাম">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="field_guardian_relation">শিক্ষার্থীর সাথে সম্পর্ক</label>
+            <input type="text" id="field_guardian_relation" class="form-control" value="পিতা" placeholder="উদাঃ পিতা / মাতা / ভাই">
+          </div>
+          <div class="form-group">
+            <label for="field_guardian_mobile">অভিভাবকের মোবাইল নং</label>
+            <input type="text" id="field_guardian_mobile" class="form-control" value="০১৮১২৩৪৫৬৭৮" placeholder="উদাঃ ০১৮১২৩৪৫৬৭৮">
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="panel-footer">
+        <button type="button" class="btn-submit-print" id="btnSubmitPrint">
+          <i class="fa-solid fa-print"></i>
+          <span>আবেদন প্রিন্ট করুন</span>
+        </button>
+        <button type="button" class="btn-reset" id="btnResetFields" title="রিসেট করুন">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- 2. RIGHT PANEL: LIVE A4 PREVIEW -->
+    <section class="right-panel">
+      <div class="a4-container" id="printableA4Document">
+        <div style="font-family: Arial, sans-serif; text-align: left; line-height: 1.6; color: #000; font-size: 15px;">
+          <p>বরাবর,<br>
+          <span class="highlight input-recipient_designation">অধ্যক্ষ</span><br>
+          <span class="highlight input-institution_name">সরকারি আজিজুল হক কলেজ</span><br>
+          <span class="highlight input-institution_upazila">বগুড়া সদর</span>, <span class="highlight input-institution_district">বগুড়া</span>।</p>
+          <br>
+          <p>বিষয়ঃ <span class="highlight input-exam_name">এসএসসি</span> পরীক্ষার ফর্ম ফিলাপের অনুমতির জন্য আবেদন।</p>
+          <br>
+          
+          <p>জনাব,</p>
+          <p style="text-align: justify; line-height: 2.2;">
+            যথাযথ সম্মান প্রদর্শনপূর্বক বিনীত নিবেদন এই যে, আমি নিম্নস্বাক্ষরকারী <span class="highlight input-applicant_name">মোহাম্মদ আরিফ</span>, 
+            রোল নং- <span class="highlight input-roll_number">১২৩৪৫</span>, 
+            বিভাগ- <span class="highlight input-department_name">বিজ্ঞান</span>, 
+            <span class="highlight input-exam_year">২০২৩</span> সালের 
+            <span class="highlight input-exam_name">এসএসসি</span> পরীক্ষার্থী। নির্বাচনী/টেস্ট পরীক্ষায় আমি 
+            <span class="highlight input-failed_subjects_count">২</span> বিষয়ে অকৃতকার্য হইয়াছি। আমি অঙ্গীকার করিতেছি যে, এখন হইতে নিয়মিত ও মনোযোগ সহকারে অধ্যয়ন করিব এবং আসন্ন 
+            <span class="highlight input-exam_name">এসএসসি</span> পরীক্ষায় সকল বিষয়ে কৃতকার্য হওয়ার সর্বোচ্চ চেষ্টা করিব, ইনশাআল্লাহ।
+          </p>
+          
+          <p style="text-align: justify; line-height: 2.2; margin-top: 15px;">
+            অতএব, মহোদয়ের নিকট বিনীত প্রার্থনা, উপরোক্ত বিষয়টি সদয় বিবেচনা করিয়া আমাকে <span class="highlight input-exam_name">এসএসসি</span> পরীক্ষার ফর্ম ফিলাপের অনুমতি প্রদান করিয়া বাধিত করিবেন।
+          </p>
+          
+          <div style="margin-top: 30px;">
+            <p>তারিখঃ <span class="highlight input-application_date">১০/১০/২০২৩</span> ইং</p>
+          </div>
+          
+          <div style="margin-top: 40px; display: flex; flex-direction: column; gap: 30px;">
+            <div>
+              <p style="font-weight: bold; margin-bottom: 5px;">আবেদনকারীর স্বাক্ষর</p>
+              <p>নামঃ <span class="highlight input-applicant_name">মোহাম্মদ আরিফ</span></p>
+              <p>পরীক্ষার নামঃ <span class="highlight input-exam_name">এসএসসি</span></p>
+              <p>রোল নংঃ <span class="highlight input-roll_number">১২৩৪৫</span></p>
+              <p>মোবাইল নংঃ <span class="highlight input-applicant_mobile">০১৭১২৩৪৫৬৭৮</span></p>
+            </div>
+            
+            <div>
+              <p style="font-weight: bold; margin-bottom: 5px;">অভিভাবকের স্বাক্ষর</p>
+              <p>নামঃ <span class="highlight input-guardian_name">মোহাম্মদ সালাম</span></p>
+              <p>শিক্ষার্থীর সাথে সম্পর্কঃ <span class="highlight input-guardian_relation">পিতা</span></p>
+              <p>মোবাইল নংঃ <span class="highlight input-guardian_mobile">০১৮১২৩৪৫৬৭৮</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 3. VANILLA JAVASCRIPT: INSTANT MULTI-FIELD DATA BINDING -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // 15 Form Fields
+      const fieldIds = [
+        'recipient_designation',
+        'institution_name',
+        'institution_upazila',
+        'institution_district',
+        'exam_name',
+        'applicant_name',
+        'roll_number',
+        'department_name',
+        'exam_year',
+        'failed_subjects_count',
+        'application_date',
+        'applicant_mobile',
+        'guardian_name',
+        'guardian_relation',
+        'guardian_mobile'
+      ];
+
+      // Store initial default values for reset
+      const defaultValues = {};
+
+      fieldIds.forEach(id => {
+        const inputElem = document.getElementById('field_' + id);
+        // Find ALL matching spans with class .input-{id} (e.g. input-exam_name appears 5 times)
+        const targetSpans = document.querySelectorAll('.input-' + id);
+
+        if (inputElem && targetSpans.length > 0) {
+          defaultValues[id] = inputElem.value;
+
+          // Function to sync input value to ALL corresponding spans simultaneously
+          const syncField = function () {
+            const val = inputElem.value.trim();
+            targetSpans.forEach(span => {
+              if (val) {
+                span.textContent = val;
+              } else {
+                // Fallback indicator when input is cleared
+                span.textContent = '[' + (inputElem.placeholder || id) + ']';
+              }
+            });
+          };
+
+          // Attach live event listeners (input, keyup, change)
+          inputElem.addEventListener('input', syncField);
+          inputElem.addEventListener('keyup', syncField);
+          inputElem.addEventListener('change', syncField);
+        }
+      });
+
+      // Submit / Print Button
+      const btnPrint = document.getElementById('btnSubmitPrint');
+      if (btnPrint) {
+        btnPrint.addEventListener('click', function () {
+          window.print();
+        });
+      }
+
+      // Reset Button: Restores initial pre-filled values
+      const btnReset = document.getElementById('btnResetFields');
+      if (btnReset) {
+        btnReset.addEventListener('click', function () {
+          fieldIds.forEach(id => {
+            const inputElem = document.getElementById('field_' + id);
+            const targetSpans = document.querySelectorAll('.input-' + id);
+            if (inputElem && targetSpans.length > 0 && defaultValues[id] !== undefined) {
+              inputElem.value = defaultValues[id];
+              targetSpans.forEach(span => {
+                span.textContent = defaultValues[id];
+              });
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

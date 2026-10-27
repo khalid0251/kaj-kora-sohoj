@@ -1,0 +1,30 @@
+# Environment and sensitive API keys
+.env
+*.env
+
+# Large AI Model Weights (>100MB cannot be pushed to GitHub)
+models/*.onnx
+
+# Python cache & compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.bak
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Uploads & generated photos
+static/uploads/processed/*
+static/recent_photos/*
+!static/uploads/processed/.gitkeep
+!static/recent_photos/.gitkeep
+
+# Temporary scratch folder
+scratch/
+
+# OS files
+Thumbs.db
+.DS_Store

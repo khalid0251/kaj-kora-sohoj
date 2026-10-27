@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ম্যানুয়াল ডকুমেন্ট - কাজ করা সহজ</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- html2pdf.js CDN for direct PDF conversion -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Document Templates Engine -->
+  <script src="{{ url_for('static', filename='js/document_templates.js') }}"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    /* =========================================================================
+       MANUAL DOCUMENTS TEMPLATES STYLES
+       ========================================================================= */
+    .manual-docs-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 32px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+      margin-bottom: 32px;
+    }
+
+    /* Page Header */
+    .docs-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #edf2f7;
+    }
+
+    .docs-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .docs-title-pipe {
+      width: 4px;
+      height: 26px;
+      background: #FF9800;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .docs-main-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0;
+      letter-spacing: -0.2px;
+    }
+
+    .docs-count-pill {
+      background: #e8f4f8;
+      color: #135e7d;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid #bce1ee;
+    }
+
+    /* Orange Outline Button: আমার ডকুমেন্ট */
+    .btn-outline-orange {
+      color: #FF9800;
+      border: 1.5px solid #FF9800;
+      background: transparent;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .btn-outline-orange:hover {
+      background: #FF9800;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(255, 152, 0, 0.35);
+      transform: translateY(-1px);
+    }
+
+    /* Search Bar with Ctrl+K Hint */
+    .search-bar-wrapper {
+      position: relative;
+      width: 100%;
+      margin-bottom: 18px;
+    }
+
+    .search-bar-input {
+      width: 100%;
+      padding: 13px 105px 13px 46px;
+      font-size: 14.5px;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      background: #f8fafc;
+      color: #1e293b;
+      transition: all 0.2s ease;
+    }
+
+    .search-bar-input:focus {
+      outline: none;
+      border-color: #FF9800;
+      background: #ffffff;
+      box-shadow: 0 0 0 3.5px rgba(255, 152, 0, 0.16);
+    }
+
+    .search-bar-input::placeholder {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    .search-bar-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+      font-size: 16px;
+      pointer-events: none;
+    }
+
+    .search-kbd-hint {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e2e8f0;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 700;
+      pointer-events: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    /* 3 Dropdown Filters Side-by-Side */
+    .filters-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .custom-filter-select {
+      background-color: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      color: #334155;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 9px 14px;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .custom-filter-select:focus {
+      border-color: #FF9800;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+      background-color: #ffffff;
+      outline: none;
+    }
+
+    .btn-reset-filters {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-reset-filters:hover {
+      background: #fee2e2;
+      color: #ef4444;
+      border-color: #fca5a5;
+    }
+
+    /* Clean Modern Table */
+    .docs-table-wrapper {
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .docs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .docs-table thead tr {
+      background: #f8fafc;
+      border-bottom: 1.5px solid #e2e8f0;
+    }
+
+    .docs-table th {
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      text-align: left;
+    }
+
+    .docs-table tbody tr {
+      border-bottom: 1px solid #edf2f7;
+      transition: background-color 0.15s ease;
+    }
+
+    .docs-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .docs-table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    .docs-table td {
+      padding: 16px 16px;
+      vertical-align: middle;
+      color: #334155;
+    }
+
+    /* Serial Number Column */
+    .serial-col {
+      width: 48px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    /* Document Name Column */
+    .doc-name-cell {
+      max-width: 420px;
+    }
+
+    .doc-item-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      line-height: 1.35;
+    }
+
+    .doc-item-desc {
+      font-size: 12.5px;
+      color: #64748b;
+      line-height: 1.45;
+      margin-bottom: 6px;
+    }
+
+    .doc-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .tag-chip {
+      font-size: 11px;
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+
+    /* Badges */
+    .badge-free {
+      background: #10B981;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      line-height: 1.2;
+      display: inline-block;
+    }
+
+    .badge-paid {
+      background: #f1f5f9;
+      color: #64748b;
+      border: 1px solid #cbd5e1;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      line-height: 1.2;
+      display: inline-block;
+    }
+
+    /* Category & Language Tag Badges */
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .tag-cat-mamla { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+    .tag-cat-dolil { background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+    .tag-cat-abedon { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+    .tag-cat-onggikar { background: #f0fdfa; color: #0f766e; border: 1px solid #99f6e4; }
+    .tag-cat-trade { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
+    .tag-cat-chukti { background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .tag-cat-protyoyon { background: #fff1f2; color: #be123c; border: 1px solid #fecdd3; }
+    .tag-cat-holof { background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; }
+    .tag-cat-default { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+    .tag-lang-bangla { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .tag-lang-english { background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; }
+
+    /* Modern Pagination Footer */
+    .docs-pagination-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #edf2f7;
+    }
+
+    .pagination-info {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: #64748b;
+    }
+
+    .pagination-info strong {
+      color: #1e293b;
+      font-weight: 700;
+    }
+
+    .pagination-list {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .page-btn {
+      min-width: 38px;
+      height: 38px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #475569;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+
+    .page-btn:hover:not(.disabled):not(.active) {
+      background: #fff7ed;
+      border-color: #fdba74;
+      color: #c2410c;
+      transform: translateY(-1px);
+    }
+
+    /* Active Page Button: Solid Orange */
+    .page-btn.active {
+      background: #FF9800;
+      border-color: #FF9800;
+      color: #ffffff !important;
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(255, 152, 0, 0.38);
+      cursor: default;
+    }
+
+    .page-btn.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      color: #94a3b8;
+      pointer-events: none;
+    }
+
+    .page-ellipsis {
+      min-width: 24px;
+      text-align: center;
+      color: #94a3b8;
+      font-weight: 700;
+      font-size: 14px;
+      user-select: none;
+      padding: 0 4px;
+    }
+
+    /* Number Pills */
+    .count-pill {
+      font-weight: 600;
+      color: #334155;
+      font-size: 13.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Actions Column */
+    .actions-cell {
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .btn-solid-orange {
+      background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+      color: #ffffff !important;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 8px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(245, 124, 0, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-solid-orange:hover {
+      background: linear-gradient(135deg, #ffa726 0%, #fb8c00 100%);
+      box-shadow: 0 4px 12px rgba(245, 124, 0, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-link-preview {
+      background: transparent;
+      border: 1px solid transparent;
+      color: #0284C7;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .btn-link-preview:hover {
+      background: rgba(2, 132, 199, 0.08);
+      color: #0369a1;
+      border-color: rgba(2, 132, 199, 0.2);
+    }
+
+    /* Empty Search State */
+    .docs-empty-state {
+      padding: 48px 24px;
+      text-align: center;
+      color: #64748b;
+    }
+    .empty-state-icon {
+      font-size: 42px;
+      color: #cbd5e1;
+      margin-bottom: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 991.98px) {
+      .filters-row {
+        grid-template-columns: 1fr;
+      }
+      .docs-table-wrapper {
+        overflow-x: auto;
+      }
+      .docs-table {
+        min-width: 780px;
+      }
+    }
+
+    /* ========================================================
+       FULLSCREEN PREVIEW MODAL (UI EXACTLY LIKE REFERENCE)
+       ======================================================== */
+    .modal-fullscreen-preview .modal-dialog {
+      width: 100vw;
+      max-width: none;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .modal-fullscreen-preview .modal-content {
+      height: 100vh;
+      border: none;
+      border-radius: 0;
+      background: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-fullscreen-preview .modal-header {
+      background: #ffffff !important;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 12px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      z-index: 1055;
+    }
+
+    .modal-fullscreen-preview .modal-header .preview-header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .modal-fullscreen-preview .modal-header .preview-header-left i {
+      font-size: 20px;
+      color: #0f172a;
+    }
+
+    .modal-fullscreen-preview .modal-header .preview-header-left h5 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0;
+    }
+
+    .preview-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Red Square Close Button (X) */
+    .btn-close-red-square {
+      width: 36px;
+      height: 36px;
+      background: #EF4444;
+      color: #ffffff !important;
+      border: none;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.35);
+    }
+
+    .btn-close-red-square:hover {
+      background: #DC2626;
+      transform: scale(1.05);
+      box-shadow: 0 4px 10px rgba(220, 38, 38, 0.45);
+    }
+
+    .modal-fullscreen-preview .modal-body {
+      background: #f1f5f9;
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      padding: 35px 20px 80px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      position: relative;
+    }
+
+    /* Centered A4 Paper Container */
+    .preview-a4-sheet {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      padding: 24mm 20mm;
+      border-radius: 4px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+      color: #1e293b;
+      font-family: 'Hind Siliguri', serif;
+      line-height: 1.95;
+      font-size: 15.5px;
+      box-sizing: border-box;
+      transform-origin: top center;
+      transition: transform 0.15s ease-out;
+      margin: 0 auto;
+    }
+
+    /* Highlighted Variable Fields (Light Green BG & Dark Green Text) */
+    .highlight-field {
+      background-color: #dcfce7 !important;
+      color: #166534 !important;
+      padding: 2px 6px !important;
+      border-radius: 4px !important;
+      font-size: 0.9em !important;
+      font-weight: 600 !important;
+      display: inline-block !important;
+      line-height: 1.4 !important;
+      border: 1px dashed rgba(22, 101, 52, 0.25) !important;
+    }
+
+    /* Floating Zoom Controls at Bottom Right */
+    .floating-preview-controls {
+      position: fixed;
+      bottom: 28px;
+      right: 32px;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(10px);
+      color: #ffffff;
+      padding: 6px 14px;
+      border-radius: 50px;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 1090;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .floating-tool-btn {
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-size: 14px;
+    }
+
+    .floating-tool-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      transform: scale(1.1);
+    }
+
+    .floating-zoom-text {
+      font-size: 12.5px;
+      font-weight: 700;
+      min-width: 44px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    /* ========================================================
+       DYNAMIC SPLIT-SCREEN CREATOR VIEW STYLES
+       ======================================================== */
+    .manual-docs-creator-view {
+      background: #ffffff;
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .creator-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 28px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .btn-back-to-list {
+      color: #334155;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .btn-back-to-list:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      transform: translateX(-2px);
+    }
+
+    .creator-title-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .creator-title-badge .pipe {
+      color: #FF9800;
+      font-weight: 800;
+      font-size: 22px;
+    }
+
+    .creator-split-body {
+      display: flex;
+      min-height: 840px;
+      background: #f8fafc;
+    }
+
+    /* Left Panel: Form Inputs */
+    .creator-left-form-panel {
+      width: 430px;
+      flex-shrink: 0;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      max-height: 880px;
+      overflow-y: auto;
+    }
+
+    .form-panel-header {
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .form-label-custom {
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .form-control-custom {
+      font-size: 13.5px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1.5px solid #cbd5e1;
+      background: #f8fafc;
+      color: #0f172a;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .form-control-custom:focus {
+      outline: none;
+      border-color: #FF9800;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+    }
+
+    /* Right Panel: Live Preview & Canvas */
+    .creator-right-preview-panel {
+      flex: 1;
+      background: #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .creator-actions-bar {
+      padding: 12px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .btn-action-print {
+      background: #10b981;
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-action-print:hover {
+      background: #059669;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-action-pdf {
+      background: #135E7D;
+      color: #ffffff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-action-pdf:hover {
+      background: #0B3344;
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(19, 94, 125, 0.3);
+    }
+
+    .creator-zoom-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 8px;
+    }
+
+    .btn-zoom-icon {
+      background: transparent;
+      border: none;
+      color: #475569;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-zoom-icon:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .zoom-level-text {
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .creator-a4-viewport {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      padding: 28px 20px 80px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .field-filled {
+      color: #0f172a !important;
+      font-weight: 700 !important;
+      border-bottom: 1.5px solid #0f766e !important;
+      padding: 0 4px !important;
+      background: transparent !important;
+      border-radius: 0 !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .creator-split-body {
+        flex-direction: column;
+      }
+      .creator-left-form-panel {
+        width: 100%;
+        max-height: none;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+      body * {
+        visibility: hidden;
+      }
+      .creator-a4-viewport,
+      .creator-a4-viewport *,
+      .preview-a4-sheet,
+      .preview-a4-sheet * {
+        visibility: visible;
+      }
+      #creatorA4Paper,
+      #previewA4Paper {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 210mm !important;
+        min-height: 297mm !important;
+        margin: 0 !important;
+        padding: 20mm 18mm !important;
+        box-shadow: none !important;
+        border: none !important;
+        background: #ffffff !important;
+        transform: none !important;
+        z-index: 999999 !important;
+      }
+      .sidebar, .topbar, .app-footer, .sidebar-overlay, .creator-header-bar, .creator-left-form-panel, .creator-actions-bar, .modal-header, .floating-preview-controls, .modal-backdrop, .docs-header-bar, .search-bar-wrapper, .filters-row, .docs-table-wrapper, .docs-pagination-footer {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-wrapper">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <a href="{{ url_for('dashboard') }}" class="brand-logo-card" title="কাজ করা সহজ - হোম">
+          <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="কাজ করা সহজ লোগো" class="sidebar-logo">
+        </a>
+      </div>
+
+      <div class="sidebar-menu-wrapper">
+        <div class="menu-category-title">মূল মেনু</div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="{{ url_for('dashboard') }}" class="nav-link-custom">
+              <i class="bi bi-grid-1x2-fill"></i>
+              <span>ড্যাশবোর্ড</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('photo_edit') }}" class="nav-link-custom">
+              <i class="bi bi-camera-fill"></i>
+              <span>ফটো এডিটিং</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-ui-checks"></i>
+              <span>অটো ফর্ম</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('manual_documents') }}" class="nav-link-custom active">
+              <i class="bi bi-file-earmark-richtext"></i>
+              <span>ডকুমেন্ট মেকার</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-cloud-arrow-up"></i>
+              <span>ফাইল শেয়ার</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-gear"></i>
+              <span>সেটিংস</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="step-indicator">
+          <div class="status-dot"></div>
+          <div class="step-info">
+            <small>সিস্টেম ভার্সন</small>
+            <span>স্মার্ট স্টুডিও ২.০</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+    <div class="main-wrapper">
+      <!-- টপবার -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-toggle" id="sidebarToggle" aria-label="মেনু খুলুন">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="page-title-badge">
+            <i class="bi bi-file-earmark-richtext text-teal"></i>
+            <span>ম্যানুয়াল ডকুমেন্ট / টেমপ্লেট লাইব্রেরি</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="system-status-pill">
+            <span></span>
+            সার্ভার সক্রিয়
+          </div>
+
+          <div class="user-profile">
+            <div class="avatar-circle">ক</div>
+            <div class="user-meta d-none d-sm-block">
+              <span>ব্যবহারকারী</span>
+              <small>অ্যাডমিন প্যানেল</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- মূল কন্টেন্ট এরিয়া -->
+      <main class="content-body">
+        <div class="container-fluid p-0">
+
+          <!-- ========================================================
+               MANUAL DOCUMENTS SECTION (LIST VIEW)
+               ======================================================== -->
+          <div class="manual-docs-list-view" id="docsListView">
+            <div class="manual-docs-card">
+
+              <!-- 1. Header: Title + "আমার ডকুমেন্ট" Button -->
+              <div class="docs-header-bar">
+                <div class="docs-title-wrap">
+                  <span class="docs-title-pipe"></span>
+                  <h1 class="docs-main-title">ম্যানুয়াল ডকুমেন্ট</h1>
+                  <span class="docs-count-pill" id="totalDocsBadge">৫ টি টেমপ্লেট</span>
+                </div>
+                <div>
+                  <button type="button" class="btn-outline-orange" id="myDocumentsBtn" title="আপনার তৈরিকৃত ও সংরক্ষিত ডকুমেন্টগুলো দেখুন">
+                    <i class="fa-regular fa-folder-open"></i>
+                    <span>আমার ডকুমেন্ট</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- 2. Full-Width Search Bar with Ctrl+K Hint -->
+              <div class="search-bar-wrapper">
+                <i class="fa-solid fa-magnifying-glass search-bar-icon"></i>
+                <input 
+                  type="text" 
+                  id="docSearchInput" 
+                  class="search-bar-input" 
+                  placeholder="নাম, বর্ণনা বা কীওয়ার্ড দিয়ে টেমপ্লেট সেট খুঁজুন..." 
+                  autocomplete="off"
+                  aria-label="ডকুমেন্ট খুঁজুন">
+                <kbd class="search-kbd-hint">Ctrl + K</kbd>
+              </div>
+
+              <!-- 3. Filters: 3 Dropdowns Side-by-Side + Reset Button -->
+              <div class="filters-row">
+                <!-- Filter by Tag -->
+                <div>
+                  <select id="filterTag" class="form-select custom-filter-select" aria-label="ট্যাগ ফিল্টার">
+                    <option value="">ট্যাগ দিয়ে ফিল্টার (সকল)</option>
+                  </select>
+                </div>
+
+                <!-- Filter by Category -->
+                <div>
+                  <select id="filterCategory" class="form-select custom-filter-select" aria-label="ক্যাটাগরি ফিল্টার">
+                    <option value="">ক্যাটাগরি দিয়ে ফিল্টার (সকল)</option>
+                  </select>
+                </div>
+
+                <!-- Filter by Language -->
+                <div>
+                  <select id="filterLanguage" class="form-select custom-filter-select" aria-label="ভাষা ফিল্টার">
+                    <option value="">ভাষা দিয়ে ফিল্টার (সকল)</option>
+                  </select>
+                </div>
+
+                <!-- Reset Filters Button -->
+                <div>
+                  <button type="button" class="btn-reset-filters d-none" id="resetFiltersBtn" title="সকল ফিল্টার ও সার্চ মুছে ফেলুন">
+                    <i class="fa-solid fa-rotate-left"></i> রিসেট ফিল্টার
+                  </button>
+                </div>
+              </div>
+
+              <!-- 4. Modern Documents Table -->
+              <div class="docs-table-wrapper">
+                <table class="docs-table">
+                  <thead>
+                    <tr>
+                      <th class="serial-col">#</th>
+                      <th style="min-width: 280px;">নাম</th>
+                      <th style="min-width: 110px;">ক্যাটাগরি</th>
+                      <th style="min-width: 90px;">ভাষা</th>
+                      <th style="min-width: 80px;">ফিল্ড</th>
+                      <th style="min-width: 90px;">ডকুমেন্ট</th>
+                      <th class="actions-cell" style="min-width: 220px;">অ্যাকশন</th>
+                    </tr>
+                  </thead>
+                  <tbody id="documentsTableBody">
+                    <!-- Dynamically rendered by renderDocuments(data) -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- 5. Table Footer: Pagination & Counter -->
+              <div class="docs-pagination-footer" id="docsPaginationFooter">
+                <!-- Left Side: Range Info Text -->
+                <div class="pagination-info" id="paginationInfo">
+                  মোট ১২ টির মধ্যে ১-১২ দেখানো হচ্ছে
+                </div>
+
+                <!-- Right Side: Pagination Controls -->
+                <div class="pagination-controls" id="paginationControls">
+                  <!-- Dynamically rendered by renderPaginationControls() -->
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ========================================================
+               DYNAMIC SPLIT-SCREEN CREATOR VIEW (তৈরি করুন)
+               ======================================================== -->
+          <div class="manual-docs-creator-view d-none" id="docsCreatorView">
+            <!-- Top Bar: Back button, Title, Badge -->
+            <div class="creator-header-bar">
+              <div class="d-flex align-items-center gap-3">
+                <button type="button" class="btn-back-to-list" id="btnBackToList" title="ডকুমেন্ট তালিকায় ফিরে যান">
+                  <i class="fa-solid fa-arrow-left"></i> তালিকায় ফিরে যান
+                </button>
+                <div class="creator-title-badge">
+                  <span class="pipe">|</span>
+                  <h4 class="m-0 fw-bold text-dark" id="creatorDocTitle">সাহায্যের জন্য প্রত্যয়ন পত্র</h4>
+                  <span class="badge bg-primary-subtle text-primary border ms-2" id="creatorDocCategory">প্রত্যয়ন পত্র</span>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small d-none d-md-inline"><i class="fa-regular fa-keyboard me-1"></i> বামে তথ্য পূরণ করুন, ডানে লাইভ দেখুন</span>
+              </div>
+            </div>
+
+            <!-- Split-Screen Body: Left Form, Right Live A4 -->
+            <div class="creator-split-body">
+              <!-- Left Panel: Form Inputs -->
+              <div class="creator-left-form-panel">
+                <div class="form-panel-header">
+                  <div class="d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-pen-to-square text-warning"></i>
+                    <h6 class="m-0 fw-bold text-dark">প্রয়োজনীয় তথ্য পূরণ করুন</h6>
+                  </div>
+                  <small class="text-muted" id="creatorFieldsCount">১৬ টি ফিল্ড</small>
+                </div>
+
+                <!-- Dynamic Generated Form Fields Container -->
+                <form id="dynamicDocForm" class="p-3" onsubmit="return false;">
+                  <div id="dynamicFormFields" class="row g-3">
+                    <!-- Dynamically injected inputs -->
+                  </div>
+
+                  <div class="mt-4 pt-3 border-top">
+                    <button type="button" class="btn btn-solid-orange w-100 py-2 fw-bold" id="creatorGenerateBtn">
+                      <i class="fa-solid fa-wand-magic-sparkles me-1"></i> ডকুমেন্ট তৈরি সম্পন্ন করুন
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <!-- Right Panel: Live Output & Actions -->
+              <div class="creator-right-preview-panel">
+                <!-- Actions Bar -->
+                <div class="creator-actions-bar">
+                  <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-action-print" id="btnPrintDoc" title="ডকুমেন্ট প্রিন্ট করুন">
+                      <i class="fa-solid fa-print"></i> প্রিন্ট করুন
+                    </button>
+                    <button type="button" class="btn btn-action-pdf" id="btnDownloadPdf" title="পিডিএফ ফরম্যাটে ডাউনলোড করুন">
+                      <i class="fa-solid fa-file-pdf"></i> পিডিএফ ডাউনলোড
+                    </button>
+                  </div>
+
+                  <!-- Zoom controls -->
+                  <div class="creator-zoom-toolbar">
+                    <button type="button" class="btn-zoom-icon" id="btnCreatorZoomOut" title="ছোট করুন (-)">
+                      <i class="fa-solid fa-minus"></i>
+                    </button>
+                    <span class="zoom-level-text" id="creatorZoomLevel">১০০%</span>
+                    <button type="button" class="btn-zoom-icon" id="btnCreatorZoomIn" title="বড় করুন (+)">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <button type="button" class="btn-zoom-icon" id="btnCreatorZoomReset" title="রিসেট">
+                      <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Centered A4 Container -->
+                <div class="creator-a4-viewport" id="creatorA4Viewport">
+                  <div class="preview-a4-sheet" id="creatorA4Paper">
+                    <!-- Live injected HTML from template_html -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      <!-- পেজ ফুটার -->
+      <footer class="app-footer">
+        <div>&copy; 2026 <strong>কাজ করা সহজ</strong> - সকল অধিকার সংরক্ষিত।</div>
+        <div>ব্র্যান্ড থিম: ডিপ টিল (Deep Teal) & অরেঞ্জ (Orange)</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       DOCUMENT PREVIEW MODAL (প্রিভিউ দেখুন)
+       ======================================================== -->
+  <!-- ========================================================
+       DOCUMENT PREVIEW MODAL (UI EXACTLY LIKE REFERENCE)
+       ======================================================== -->
+  <div class="modal fade modal-fullscreen-preview" id="docPreviewModal" tabindex="-1" aria-labelledby="previewModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <!-- 1. Header: White BG, Eye Icon with Title on Left, Red Square Close Button on Right -->
+        <div class="modal-header">
+          <div class="preview-header-left">
+            <i class="fa-regular fa-eye"></i>
+            <h5 class="modal-title" id="previewModalTitle">সাহায্যের জন্য প্রত্যয়ন পত্র</h5>
+          </div>
+
+          <div class="preview-header-actions">
+            <a href="{{ url_for('manual_document_create') }}" class="btn btn-solid-orange" id="previewModalCreateBtn">
+              <i class="fa-solid fa-pen-to-square"></i> তৈরি করুন
+            </a>
+            <button type="button" class="btn-close-red-square" data-bs-dismiss="modal" aria-label="Close" title="বন্ধ করুন">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Body: Light Grey Background with Centered A4-sized Paper -->
+        <div class="modal-body" id="previewModalBody">
+          <div class="preview-a4-sheet" id="previewA4Paper">
+            <!-- Official Certificate Outer & Inner Borders -->
+            <div style="border: 2px solid #0f766e; padding: 5px; border-radius: 4px; min-height: calc(297mm - 48mm); box-sizing: border-box;">
+              <div style="border: 1px solid #14b8a6; padding: 24px 22px; border-radius: 3px; min-height: calc(297mm - 48mm - 14px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between;">
+                
+                <!-- Certificate Top Header -->
+                <div>
+                  <div style="text-align: center; margin-bottom: 22px;">
+                    <div style="font-size: 16px; font-weight: 700; color: #0f766e; margin-bottom: 2px; letter-spacing: 0.5px;">গণপ্রজাতন্ত্রী বাংলাদেশ সরকার</div>
+                    <div style="font-size: 20px; font-weight: 700; color: #042f2e; margin-bottom: 4px;">ইউনিয়ন পরিষদ / পৌরসভা কার্যালয়</div>
+                    <div style="font-size: 13.5px; color: #475569; margin-bottom: 12px;">নাগরিক সনদ ও প্রত্যয়ন শাখা</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #334155; font-weight: 600; border-top: 1px dashed #cbd5e1; padding-top: 6px; margin-top: 6px;">
+                      <span>স্মারক নং: ইউপি/প্রত্যয়ন/২০২৬/........</span>
+                      <span>তারিখ: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">২৩/০৯/২০২৬</span></span>
+                    </div>
+                  </div>
+
+                  <!-- Title Banner -->
+                  <div style="text-align: center; margin: 18px 0 24px 0;">
+                    <div style="display: inline-block; font-size: 22px; font-weight: 800; color: #0f172a; border-bottom: 2px solid #0f766e; padding: 2px 28px; letter-spacing: 0.5px;">প্রত্যয়ন পত্র</div>
+                    <span style="display: block; font-size: 13.5px; color: #64748b; margin-top: 4px; font-weight: 600;">(আর্থিক সাহায্যের আবেদন প্রসঙ্গে)</span>
+                  </div>
+
+                  <!-- Document Content with Highlighted Variable Fields -->
+                  <div style="text-align: justify; color: #1e293b; font-size: 15.5px; line-height: 1.95;">
+                    <p style="margin-bottom: 16px; text-indent: 35px;">
+                      এই মর্মে প্রত্যয়ন করা যাইতেছে যে, <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[নাম]</span>, 
+                      পিতা: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[পিতা]</span>, 
+                      মাতা: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[মাতা]</span>, 
+                      গ্রাম: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[গ্রাম]</span>, 
+                      ডাকঘর: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[ডাকঘর]</span>, 
+                      থানা/উপজেলা: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[থানা]</span>, 
+                      জেলা: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[জেলা]</span>, 
+                      ওয়ার্ড নং: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[ওয়ার্ড নং]</span>। 
+                      তিনি অত্র এলাকার একজন স্থায়ী বাসিন্দা ও স্থানীয় নাগরিক।
+                    </p>
+
+                    <p style="margin-bottom: 16px; text-indent: 35px;">
+                      তাঁহার <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[পুত্র/কন্যা]</span>, 
+                      <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[স্কুলের নাম]</span>-এর 
+                      <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[শ্রেণি]</span> শ্রেণির 
+                      একজন নিয়মিত ও মেধাবী শিক্ষার্থী, যাহার শাখা: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[শাখা]</span> 
+                      এবং শ্রেণি রোল নং: <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[রোল নং]</span>।
+                    </p>
+
+                    <p style="margin-bottom: 16px; text-indent: 35px;">
+                      তাঁহার পরিবারের মোট সদস্য সংখ্যা <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[পরিবারের সদস্য সংখ্যা]</span> জন 
+                      এবং পরিবারের একমাত্র উপার্জনকারী সদস্য <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[উপার্জনকারী সদস্য]</span>। 
+                      বর্তমানে <span class="highlight-field" style="background-color: #dcfce7; color: #166534; padding: 2px 4px; border-radius: 4px; font-size: 0.9em;">[সমস্যার কারণ]</span>-এর কারণে 
+                      পরিবারটি চরম অর্থকষ্ট ও আর্থিক সংকটে দিনাতিপাত করিতেছে। যাহার ফলে উল্লেখিত শিক্ষার্থীর নিয়মিত পড়াশোনার খরচ, বেতন ও শিক্ষা সামগ্রী ক্রয় করা তাহাদের পক্ষে একেবারেই অসম্ভব হইয়া পড়িয়াছে।
+                    </p>
+
+                    <p style="margin-bottom: 16px; text-indent: 35px;">
+                      আমার জানামতে তিনি ও তাঁহার পরিবারের কোনো সদস্য সমাজ বা রাষ্ট্রবিরোধী কোনো কার্যকলাপের সহিত জড়িত নহেন। পরিবারটি সরকারি/বেসরকারি আর্থিক সহায়তা ও শিক্ষা বৃত্তির বিশেষ দাবিদার।
+                    </p>
+
+                    <p style="margin-bottom: 0; text-indent: 35px;">
+                      আমি উক্ত শিক্ষার্থীর সার্বিক মঙ্গল ও ভবিষ্যৎ জীবনের উজ্জ্বল সাফল্য কামনা করি।
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Signatures Row -->
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; padding-top: 10px;">
+                  <div style="text-align: center; min-width: 170px;">
+                    <div style="color: #94a3b8; margin-bottom: 4px; font-size: 12px; letter-spacing: 2px;">................................................</div>
+                    <span style="font-size: 14px; font-weight: 700; color: #0f172a; display: block;">যাচাইকারীর স্বাক্ষর</span>
+                    <span style="font-size: 12px; color: #64748b;">সদস্য / ওয়ার্ড মেম্বার</span>
+                  </div>
+
+                  <div style="text-align: center; min-width: 170px;">
+                    <div style="color: #94a3b8; margin-bottom: 4px; font-size: 12px; letter-spacing: 2px;">................................................</div>
+                    <span style="font-size: 14px; font-weight: 700; color: #0f172a; display: block;">চেয়ারম্যান / কাউন্সিলর</span>
+                    <span style="font-size: 12px; color: #64748b;">স্বাক্ষর ও অফিশিয়াল সিলমোহর</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Floating Zoom Controls at Bottom Right -->
+          <div class="floating-preview-controls">
+            <button type="button" class="floating-tool-btn" id="floatingZoomOut" title="ছোট করুন (-)">
+              <i class="fa-solid fa-minus"></i>
+            </button>
+            <span class="floating-zoom-text" id="previewZoomText">১০০%</span>
+            <button type="button" class="floating-tool-btn" id="floatingZoomIn" title="বড় করুন (+)">
+              <i class="fa-solid fa-plus"></i>
+            </button>
+            <button type="button" class="floating-tool-btn" id="floatingZoomReset" title="রিসেট">
+              <i class="fa-solid fa-arrows-rotate"></i>
+            </button>
+            <button type="button" class="floating-tool-btn" id="floatingFullscreen" title="ফুলস্ক্রিন টগল">
+              <i class="fa-solid fa-expand"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       "আমার ডকুমেন্ট" MODAL
+       ======================================================== -->
+  <div class="modal fade" id="myDocsModal" tabindex="-1" aria-labelledby="myDocsTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden;">
+        <div class="modal-header" style="background: #091319; color: #ffffff; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div class="d-flex align-items-center gap-2">
+            <span style="width: 4px; height: 20px; background: #FF9800; border-radius: 2px;"></span>
+            <h5 class="modal-title fw-bold" id="myDocsTitle">আমার ডকুমেন্ট সংগ্রহশালা</h5>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 text-center" style="background: #f8fafc;">
+          <div class="py-4">
+            <div style="font-size: 48px; color: #FF9800;" class="mb-3">
+              <i class="fa-regular fa-folder-open"></i>
+            </div>
+            <h5 class="fw-bold text-dark">এখনও কোনো ডকুমেন্ট ড্রাফট বা সেভ করা হয়নি</h5>
+            <p class="text-muted small max-w-400 mx-auto">
+              যেকোনো টেমপ্লেটের ডানপাশে <strong>"তৈরি করুন"</strong> বাটনে ক্লিক করে তথ্য পূরণ করে সেভ বা প্রিন্ট করলে আপনার ডকুমেন্ট এখানে জমা থাকবে।
+            </p>
+          </div>
+        </div>
+        <div class="modal-footer" style="background: #ffffff; border-top: 1px solid #e2e8f0;">
+          <button type="button" class="btn btn-secondary px-3" data-bs-dismiss="modal">বন্ধ করুন</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- ========================================================
+       DYNAMIC RENDERING & CLIENT-SIDE FILTERING JAVASCRIPT
+       ======================================================== -->
+  <script>
+    // Initial document dataset passed from Flask backend or default array
+    let allDocuments = {{ documents | tojson if documents else '[]' }};
+
+    // Pagination & State Management
+    let currentPage = 1;
+    const itemsPerPage = 12;
+    let currentFilteredData = [];
+
+    /**
+     * Helper: Convert English numeric digits to Bengali digits
+     */
+    function toBengaliNumber(num) {
+      if (num === null || num === undefined) return '';
+      const bnDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+      return String(num).replace(/\d/g, d => bnDigits[parseInt(d, 10)]);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // If dataset was empty from Jinja, fetch from /api/manual-documents
+      if (!allDocuments || allDocuments.length === 0) {
+        fetch('/api/manual-documents')
+          .then(res => res.json())
+          .then(data => {
+            if (data.success && data.documents) {
+              allDocuments = data.documents;
+              initDashboard();
+            }
+          })
+          .catch(err => console.error("Error fetching documents:", err));
+      } else {
+        initDashboard();
+      }
+    });
+
+    function initDashboard() {
+      currentFilteredData = [...allDocuments];
+
+      // 1. Populate Dropdown Filters Dynamically from dataset
+      populateDropdownOptions(allDocuments);
+
+      // 2. Render Table with pagination (12 items per page)
+      renderDocuments(allDocuments);
+
+      // 3. Setup Search & Filter Event Listeners
+      setupFilterListeners();
+
+      // 4. Setup Keyboard Shortcut (Ctrl + K)
+      setupKeyboardShortcuts();
+
+      // 5. Setup Action Buttons
+      setupActionHandlers();
+    }
+
+    /**
+     * Dynamically populates Tag, Category, and Language dropdown options from JSON data.
+     * When more documents are added later, options update automatically!
+     */
+    function populateDropdownOptions(data) {
+      const tagSelect = document.getElementById('filterTag');
+      const catSelect = document.getElementById('filterCategory');
+      const langSelect = document.getElementById('filterLanguage');
+
+      const tagsSet = new Set();
+      const catSet = new Set();
+      const langSet = new Set();
+
+      data.forEach(doc => {
+        if (doc.category) catSet.add(doc.category);
+        if (doc.language) langSet.add(doc.language);
+        if (doc.tags && Array.isArray(doc.tags)) {
+          doc.tags.forEach(t => tagsSet.add(t));
+        }
+      });
+
+      // Populate Categories
+      catSet.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = `ক্যাটাগরি: ${cat}`;
+        catSelect.appendChild(opt);
+      });
+
+      // Populate Languages
+      langSet.forEach(lang => {
+        const opt = document.createElement('option');
+        opt.value = lang;
+        opt.textContent = `ভাষা: ${lang}`;
+        langSelect.appendChild(opt);
+      });
+
+      // Populate Tags
+      tagsSet.forEach(tag => {
+        const opt = document.createElement('option');
+        opt.value = tag;
+        opt.textContent = `ট্যাগ: ${tag}`;
+        tagSelect.appendChild(opt);
+      });
+    }
+
+    /**
+     * Loops through JSON data array and renders table rows dynamically.
+     * Handles pagination (12 items per page) and displays range in footer.
+     */
+    function renderDocuments(data) {
+      if (data !== undefined) {
+        currentFilteredData = data;
+      }
+
+      const tbody = document.getElementById('documentsTableBody');
+      const totalBadge = document.getElementById('totalDocsBadge');
+      const paginationFooter = document.getElementById('docsPaginationFooter');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+
+      const totalItems = currentFilteredData.length;
+
+      if (totalBadge) {
+        totalBadge.textContent = `${toBengaliNumber(totalItems)} টি টেমপ্লেট`;
+      }
+
+      if (totalItems === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="docs-empty-state">
+              <div class="empty-state-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+              <h6 class="fw-bold mb-1">কোনো ডকুমেন্ট টেমপ্লেট পাওয়া যায়নি</h6>
+              <p class="small text-muted mb-0">অন্য কোনো নাম, ট্যাগ বা ফিল্টার নির্বাচন করে পুনরায় চেষ্টা করুন।</p>
+            </td>
+          </tr>
+        `;
+        if (paginationFooter) {
+          paginationFooter.classList.add('d-none');
+        }
+        return;
+      }
+
+      if (paginationFooter) {
+        paginationFooter.classList.remove('d-none');
+      }
+
+      // Calculate total pages & clamp current page
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      // Slice data for current page (strictly 12 items per page)
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+      const pageData = currentFilteredData.slice(startIndex, endIndex);
+
+      pageData.forEach((doc, index) => {
+        const tr = document.createElement('tr');
+
+        // Category Tag Class
+        let catClass = 'tag-cat-default';
+        if (doc.category === 'মামলা') catClass = 'tag-cat-mamla';
+        else if (doc.category === 'দলিল') catClass = 'tag-cat-dolil';
+        else if (doc.category === 'আবেদনপত্র') catClass = 'tag-cat-abedon';
+        else if (doc.category === 'অঙ্গীকারনামা') catClass = 'tag-cat-onggikar';
+        else if (doc.category === 'ট্রেড লাইসেন্স') catClass = 'tag-cat-trade';
+        else if (doc.category === 'চুক্তিপত্র') catClass = 'tag-cat-chukti';
+        else if (doc.category === 'প্রত্যয়ন পত্র') catClass = 'tag-cat-protyoyon';
+        else if (doc.category === 'হলফনামা') catClass = 'tag-cat-holof';
+
+        // Language Tag Class
+        const langClass = doc.language === 'ইংরেজি' ? 'tag-lang-english' : 'tag-lang-bangla';
+
+        // Free/Paid Badge
+        const freeBadgeHtml = doc.is_free 
+          ? `<span class="badge-free ms-2">ফ্রি</span>` 
+          : `<span class="badge-paid ms-2">পেইড</span>`;
+
+        // Tags Chips
+        let tagsHtml = '';
+        if (doc.tags && Array.isArray(doc.tags)) {
+          tagsHtml = doc.tags.map(t => `<span class="tag-chip">${t}</span>`).join('');
+        }
+
+        // Global serial number based on page
+        const globalSerial = startIndex + index + 1;
+        const serialStr = globalSerial < 10 ? `0${globalSerial}` : `${globalSerial}`;
+        const bnSerial = toBengaliNumber(serialStr);
+
+        tr.innerHTML = `
+          <td class="serial-col">${bnSerial}</td>
+          <td class="doc-name-cell">
+            <div class="doc-item-title">
+              <span>${doc.title}</span>
+              ${freeBadgeHtml}
+            </div>
+            <div class="doc-item-desc">${doc.description || ''}</div>
+            <div class="doc-tags-wrap">${tagsHtml}</div>
+          </td>
+          <td>
+            <span class="tag-badge ${catClass}">
+              <i class="fa-solid fa-tag me-1"></i>${doc.category || 'অন্যান্য'}
+            </span>
+          </td>
+          <td>
+            <span class="tag-badge ${langClass}">
+              <i class="fa-solid fa-globe me-1"></i>${doc.language || 'বাংলা'}
+            </span>
+          </td>
+          <td>
+            <span class="count-pill">
+              <i class="fa-regular fa-rectangle-list text-secondary"></i>
+              ${toBengaliNumber(doc.fields_count || 0)} টি
+            </span>
+          </td>
+          <td>
+            <span class="count-pill">
+              <i class="fa-regular fa-file-lines text-secondary"></i>
+              ${toBengaliNumber(doc.doc_count || 1)} টি
+            </span>
+          </td>
+          <td class="actions-cell">
+            <button type="button" class="btn-solid-orange me-2 create-doc-action-btn" data-id="${doc.id}">
+              <i class="fa-solid fa-pen-to-square"></i> তৈরি করুন
+            </button>
+            <button type="button" class="btn-link-preview preview-doc-action-btn" data-id="${doc.id}">
+              <i class="fa-solid fa-eye"></i> প্রিভিউ দেখুন
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
+      });
+
+      // Reattach action listeners to newly generated buttons
+      setupRowActionButtons();
+
+      // Render Pagination Footer (Range Info & Buttons)
+      renderPaginationControls(totalItems, totalPages, startIndex, endIndex);
+    }
+
+    /**
+     * Renders range info on left and pagination buttons on right (< 1 2 ... 7 >)
+     */
+    function renderPaginationControls(totalItems, totalPages, startIndex, endIndex) {
+      const paginationInfo = document.getElementById('paginationInfo');
+      const paginationControls = document.getElementById('paginationControls');
+
+      // 1. Update Left Side: Current view range (e.g., "মোট ৭৭ টির মধ্যে ১-১২ দেখানো হচ্ছে")
+      if (paginationInfo) {
+        const totalBn = toBengaliNumber(totalItems);
+        const startBn = toBengaliNumber(startIndex + 1);
+        const endBn = toBengaliNumber(endIndex);
+        paginationInfo.innerHTML = `মোট <strong>${totalBn}</strong> টির মধ্যে <strong>${startBn}-${endBn}</strong> দেখানো হচ্ছে`;
+      }
+
+      // 2. Update Right Side: Pagination buttons
+      if (!paginationControls) return;
+
+      // Compute pages array
+      const pages = [];
+      if (totalPages <= 7) {
+        for (let i = 1; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        if (currentPage <= 4) {
+          pages.push(1, 2, 3, 4, 5, '...', totalPages);
+        } else if (currentPage >= totalPages - 3) {
+          pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+        } else {
+          pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+        }
+      }
+
+      let html = '<div class="pagination-list">';
+
+      // Prev Button: <
+      const prevDisabled = currentPage <= 1 ? 'disabled' : '';
+      html += `<button type="button" class="page-btn ${prevDisabled}" data-page="${currentPage - 1}" title="পূর্ববর্তী পৃষ্ঠা" ${currentPage <= 1 ? 'disabled' : ''}>&lt;</button>`;
+
+      // Page Numbers and Ellipsis
+      pages.forEach(p => {
+        if (p === '...') {
+          html += `<span class="page-ellipsis">...</span>`;
+        } else {
+          const isActive = p === currentPage ? 'active' : '';
+          html += `<button type="button" class="page-btn ${isActive}" data-page="${p}" ${p === currentPage ? 'aria-current="page"' : ''}>${toBengaliNumber(p)}</button>`;
+        }
+      });
+
+      // Next Button: >
+      const nextDisabled = currentPage >= totalPages ? 'disabled' : '';
+      html += `<button type="button" class="page-btn ${nextDisabled}" data-page="${currentPage + 1}" title="পরবর্তী পৃষ্ঠা" ${currentPage >= totalPages ? 'disabled' : ''}>&gt;</button>`;
+
+      html += '</div>';
+      paginationControls.innerHTML = html;
+
+      // Attach click events to active page buttons
+      paginationControls.querySelectorAll('.page-btn:not(.disabled):not(.active)').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const targetPage = parseInt(this.getAttribute('data-page'), 10);
+          if (targetPage && targetPage >= 1 && targetPage <= totalPages && targetPage !== currentPage) {
+            currentPage = targetPage;
+            renderDocuments();
+            // Smoothly scroll to the table top
+            const tableWrap = document.querySelector('.docs-table-wrapper');
+            if (tableWrap) {
+              tableWrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
+        });
+      });
+    }
+
+    /**
+     * Search & Filter Event Listeners
+     */
+    function setupFilterListeners() {
+      const searchInput = document.getElementById('docSearchInput');
+      const tagSelect = document.getElementById('filterTag');
+      const catSelect = document.getElementById('filterCategory');
+      const langSelect = document.getElementById('filterLanguage');
+      const resetBtn = document.getElementById('resetFiltersBtn');
+
+      function executeFilter() {
+        const query = searchInput.value.trim().toLowerCase();
+        const selectedTag = tagSelect.value;
+        const selectedCat = catSelect.value;
+        const selectedLang = langSelect.value;
+
+        // Toggle reset button visibility
+        const isFilterActive = query !== '' || selectedTag !== '' || selectedCat !== '' || selectedLang !== '';
+        if (resetBtn) {
+          if (isFilterActive) {
+            resetBtn.classList.remove('d-none');
+          } else {
+            resetBtn.classList.add('d-none');
+          }
+        }
+
+        // Apply Array.prototype.filter()
+        const filtered = allDocuments.filter(doc => {
+          // 1. Text Search Match (Title, Description, Category, Tags)
+          let matchQuery = true;
+          if (query) {
+            const inTitle = doc.title && doc.title.toLowerCase().includes(query);
+            const inDesc = doc.description && doc.description.toLowerCase().includes(query);
+            const inCat = doc.category && doc.category.toLowerCase().includes(query);
+            const inTags = doc.tags && doc.tags.some(t => t.toLowerCase().includes(query));
+            matchQuery = inTitle || inDesc || inCat || inTags;
+          }
+
+          // 2. Tag Match
+          let matchTag = true;
+          if (selectedTag) {
+            matchTag = doc.tags && doc.tags.includes(selectedTag);
+          }
+
+          // 3. Category Match
+          let matchCat = true;
+          if (selectedCat) {
+            matchCat = doc.category === selectedCat;
+          }
+
+          // 4. Language Match
+          let matchLang = true;
+          if (selectedLang) {
+            matchLang = doc.language === selectedLang;
+          }
+
+          return matchQuery && matchTag && matchCat && matchLang;
+        });
+
+        // Reset to page 1 on new filter/search
+        currentPage = 1;
+        // Re-render table with filtered subset
+        renderDocuments(filtered);
+      }
+
+      // Input and change triggers
+      if (searchInput) searchInput.addEventListener('input', executeFilter);
+      if (tagSelect) tagSelect.addEventListener('change', executeFilter);
+      if (catSelect) catSelect.addEventListener('change', executeFilter);
+      if (langSelect) langSelect.addEventListener('change', executeFilter);
+
+      // Reset button click
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          if (searchInput) searchInput.value = '';
+          if (tagSelect) tagSelect.value = '';
+          if (catSelect) catSelect.value = '';
+          if (langSelect) langSelect.value = '';
+          resetBtn.classList.add('d-none');
+          currentPage = 1;
+          renderDocuments(allDocuments);
+        });
+      }
+    }
+
+    /**
+     * Keyboard Shortcut (Ctrl + K) to focus search bar
+     */
+    function setupKeyboardShortcuts() {
+      const searchInput = document.getElementById('docSearchInput');
+      window.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+          e.preventDefault();
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+          }
+        }
+      });
+    }
+
+    /**
+     * Setup Header Buttons and Modals
+     */
+    function setupActionHandlers() {
+      // "আমার ডকুমেন্ট" Button
+      const myDocsBtn = document.getElementById('myDocumentsBtn');
+      if (myDocsBtn) {
+        myDocsBtn.addEventListener('click', function () {
+          const myModal = new bootstrap.Modal(document.getElementById('myDocsModal'));
+          myModal.show();
+        });
+      }
+
+      // Initialize Floating Zoom Controls for Preview Modal
+      setupPreviewZoomControls();
+
+      // Initialize Creator View Controls (Back button, Zoom, Print, PDF)
+      setupCreatorViewControls();
+    }
+
+    let previewZoomLevel = 1.0;
+
+    /**
+     * Floating Zoom Controls for Preview Modal (Zoom In, Zoom Out, Reset, Fullscreen)
+     */
+    function setupPreviewZoomControls() {
+      const previewPaper = document.getElementById('previewA4Paper');
+      const zoomText = document.getElementById('previewZoomText');
+      const btnZoomIn = document.getElementById('floatingZoomIn');
+      const btnZoomOut = document.getElementById('floatingZoomOut');
+      const btnReset = document.getElementById('floatingZoomReset');
+      const btnFullscreen = document.getElementById('floatingFullscreen');
+
+      function applyPreviewZoom() {
+        if (previewPaper) {
+          previewPaper.style.transform = `scale(${previewZoomLevel})`;
+        }
+        if (zoomText) {
+          const bnPercent = Math.round(previewZoomLevel * 100);
+          zoomText.textContent = toBengaliNumber(bnPercent) + '%';
+        }
+      }
+
+      if (btnZoomIn) {
+        btnZoomIn.onclick = function () {
+          if (previewZoomLevel < 1.6) {
+            previewZoomLevel = Math.round((previewZoomLevel + 0.1) * 10) / 10;
+            applyPreviewZoom();
+          }
+        };
+      }
+
+      if (btnZoomOut) {
+        btnZoomOut.onclick = function () {
+          if (previewZoomLevel > 0.5) {
+            previewZoomLevel = Math.round((previewZoomLevel - 0.1) * 10) / 10;
+            applyPreviewZoom();
+          }
+        };
+      }
+
+      if (btnReset) {
+        btnReset.onclick = function () {
+          previewZoomLevel = 1.0;
+          applyPreviewZoom();
+        };
+      }
+
+      if (btnFullscreen) {
+        btnFullscreen.onclick = function () {
+          const modalBody = document.getElementById('previewModalBody');
+          if (!document.fullscreenElement) {
+            if (modalBody && modalBody.requestFullscreen) {
+              modalBody.requestFullscreen();
+            } else if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen();
+            }
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            }
+          }
+        };
+      }
+    }
+
+    /**
+     * =========================================================================
+     * DYNAMIC TEMPLATE ENGINE INTEGRATION
+     * =========================================================================
+     */
+    let currentActiveTemplate = null;
+    let creatorZoomLevel = 1.0;
+
+    function applyCreatorZoom() {
+      const paper = document.getElementById('creatorA4Paper');
+      const zoomText = document.getElementById('creatorZoomLevel');
+      if (paper) {
+        paper.style.transform = `scale(${creatorZoomLevel})`;
+      }
+      if (zoomText) {
+        const bnPercent = Math.round(creatorZoomLevel * 100);
+        zoomText.textContent = toBengaliNumber(bnPercent) + '%';
+      }
+    }
+
+    /**
+     * Opens Fullscreen Preview Modal for ANY template
+     */
+    function openDocumentPreview(docId) {
+      const template = window.getTemplateById ? window.getTemplateById(docId) : null;
+      if (!template) {
+        alert("টেমপ্লেট লোড করা যায়নি!");
+        return;
+      }
+
+      // 1. Update Title in Modal Header
+      const titleElem = document.getElementById('previewModalTitle');
+      if (titleElem) {
+        titleElem.textContent = template.title;
+      }
+
+      // 2. Link 'তৈরি করুন' button in modal to open creator
+      const createBtn = document.getElementById('previewModalCreateBtn');
+      if (createBtn) {
+        createBtn.onclick = function (e) {
+          e.preventDefault();
+          const modalEl = document.getElementById('docPreviewModal');
+          const modalInst = bootstrap.Modal.getInstance(modalEl);
+          if (modalInst) modalInst.hide();
+          openDocumentCreator(template.id);
+        };
+      }
+
+      // 3. Inject Rendered Preview HTML (placeholders highlighted in green)
+      const previewPaper = document.getElementById('previewA4Paper');
+      if (previewPaper && window.renderPreviewHTML) {
+        previewPaper.innerHTML = window.renderPreviewHTML(template);
+      }
+
+      // 4. Reset zoom to 100%
+      previewZoomLevel = 1.0;
+      if (previewPaper) previewPaper.style.transform = 'scale(1.0)';
+      const zoomText = document.getElementById('previewZoomText');
+      if (zoomText) zoomText.textContent = toBengaliNumber(100) + '%';
+
+      // 5. Show Modal
+      const previewModal = new bootstrap.Modal(document.getElementById('docPreviewModal'));
+      previewModal.show();
+    }
+
+    /**
+     * Opens Split-Screen Creator View for ANY template
+     */
+    function openDocumentCreator(docId) {
+      if (docId === 'doc_check_case') {
+        window.location.href = '/manual-documents/check-case';
+        return;
+      }
+      if (docId === 'doc_house_allocation') {
+        window.location.href = '/manual-documents/house-allocation';
+        return;
+      }
+      if (docId === 'doc_unfinished_work') {
+        window.location.href = '/manual-documents/unfinished-work';
+        return;
+      }
+      if (docId === 'doc_form_fillup') {
+        window.location.href = '/manual-documents/form-fillup';
+        return;
+      }
+      if (docId === 'doc_ammoktar_dolil') {
+        window.location.href = '/manual-documents/ammoktar-dolil';
+        return;
+      }
+
+      const template = window.getTemplateById ? window.getTemplateById(docId) : null;
+      if (!template) {
+        alert("টেমপ্লেট লোড করা যায়নি!");
+        return;
+      }
+
+      currentActiveTemplate = template;
+
+      // 1. Switch View: Hide list, show creator
+      const listView = document.getElementById('docsListView');
+      const creatorView = document.getElementById('docsCreatorView');
+      if (listView) listView.classList.add('d-none');
+      if (creatorView) creatorView.classList.remove('d-none');
+
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 2. Set Creator Header details
+      const titleEl = document.getElementById('creatorDocTitle');
+      if (titleEl) titleEl.textContent = template.title;
+
+      const catEl = document.getElementById('creatorDocCategory');
+      if (catEl) catEl.textContent = template.category || 'ডকুমেন্ট';
+
+      const fieldsCountEl = document.getElementById('creatorFieldsCount');
+      if (fieldsCountEl) {
+        const count = template.form_fields ? template.form_fields.length : 0;
+        fieldsCountEl.textContent = `${toBengaliNumber(count)} টি ফিল্ড`;
+      }
+
+      // 3. Dynamically Generate Input Fields in Left Panel
+      const fieldsContainer = document.getElementById('dynamicFormFields');
+      if (fieldsContainer && template.form_fields) {
+        fieldsContainer.innerHTML = '';
+        template.form_fields.forEach(f => {
+          const col = document.createElement('div');
+          col.className = 'col-12';
+
+          if (f.type === 'select' && f.options) {
+            let optionsHtml = '';
+            f.options.forEach(opt => {
+              const selected = opt === f.default_value ? 'selected' : '';
+              optionsHtml += `<option value="${opt}" ${selected}>${opt}</option>`;
+            });
+            col.innerHTML = `
+              <label class="form-label-custom">${f.label}</label>
+              <select class="form-select form-control-custom doc-input-field" data-field-id="${f.id}">
+                ${optionsHtml}
+              </select>
+            `;
+          } else if (f.type === 'textarea') {
+            col.innerHTML = `
+              <label class="form-label-custom">${f.label}</label>
+              <textarea class="form-control form-control-custom doc-input-field" rows="2" data-field-id="${f.id}" placeholder="${f.placeholder || ''}">${f.default_value || ''}</textarea>
+            `;
+          } else {
+            col.innerHTML = `
+              <label class="form-label-custom">${f.label}</label>
+              <input type="${f.type || 'text'}" class="form-control form-control-custom doc-input-field" data-field-id="${f.id}" placeholder="${f.placeholder || ''}" value="${f.default_value || ''}">
+            `;
+          }
+
+          fieldsContainer.appendChild(col);
+        });
+      }
+
+      // 4. Inject Initial Live Template HTML into Right Panel
+      const creatorPaper = document.getElementById('creatorA4Paper');
+      if (creatorPaper && window.renderCreatorHTML) {
+        creatorPaper.innerHTML = window.renderCreatorHTML(template);
+      }
+
+      // 5. Attach Live Data-Binding Listeners to Generated Inputs
+      document.querySelectorAll('.doc-input-field').forEach(input => {
+        const fieldId = input.getAttribute('data-field-id');
+        const updateOutput = function () {
+          const val = input.value.trim();
+          const targetSpans = document.querySelectorAll(`#creatorA4Paper [data-placeholder="${fieldId}"]`);
+          const fieldDef = template.form_fields.find(f => f.id === fieldId);
+          const fallback = fieldDef ? `[${fieldDef.label}]` : `[${fieldId}]`;
+
+          targetSpans.forEach(span => {
+            if (val) {
+              span.textContent = val;
+              span.className = 'doc-bound-field field-filled';
+            } else {
+              span.textContent = fallback;
+              span.className = 'doc-bound-field highlight-field';
+            }
+          });
+        };
+
+        input.addEventListener('input', updateOutput);
+        input.addEventListener('change', updateOutput);
+
+        // Pre-apply if default value exists
+        if (input.value && input.value.trim()) {
+          updateOutput();
+        }
+      });
+
+      // 6. Reset Zoom
+      creatorZoomLevel = 1.0;
+      applyCreatorZoom();
+    }
+
+    /**
+     * Closes Creator View and returns to main document table
+     */
+    function closeDocumentCreator() {
+      const listView = document.getElementById('docsListView');
+      const creatorView = document.getElementById('docsCreatorView');
+      if (creatorView) creatorView.classList.add('d-none');
+      if (listView) listView.classList.remove('d-none');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * Setup Creator Toolbar & Action Controls
+     */
+    function setupCreatorViewControls() {
+      // 1. Back to list button
+      const backBtn = document.getElementById('btnBackToList');
+      if (backBtn) {
+        backBtn.onclick = closeDocumentCreator;
+      }
+
+      // 2. Generate Finished Document Button
+      const genBtn = document.getElementById('creatorGenerateBtn');
+      if (genBtn) {
+        genBtn.onclick = function () {
+          // Trigger updates on all fields
+          document.querySelectorAll('.doc-input-field').forEach(inp => {
+            inp.dispatchEvent(new Event('input'));
+          });
+          alert('ডকুমেন্ট সফলভাবে তৈরি হয়েছে! আপনি উপরে "প্রিন্ট করুন" বা "পিডিএফ ডাউনলোড" করতে পারেন।');
+        };
+      }
+
+      // 3. Zoom Controls for Creator
+      const zoomIn = document.getElementById('btnCreatorZoomIn');
+      const zoomOut = document.getElementById('btnCreatorZoomOut');
+      const zoomReset = document.getElementById('btnCreatorZoomReset');
+
+      if (zoomIn) {
+        zoomIn.onclick = function () {
+          if (creatorZoomLevel < 1.4) {
+            creatorZoomLevel = Math.round((creatorZoomLevel + 0.1) * 10) / 10;
+            applyCreatorZoom();
+          }
+        };
+      }
+
+      if (zoomOut) {
+        zoomOut.onclick = function () {
+          if (creatorZoomLevel > 0.6) {
+            creatorZoomLevel = Math.round((creatorZoomLevel - 0.1) * 10) / 10;
+            applyCreatorZoom();
+          }
+        };
+      }
+
+      if (zoomReset) {
+        zoomReset.onclick = function () {
+          creatorZoomLevel = 1.0;
+          applyCreatorZoom();
+        };
+      }
+
+      // 4. Print Handler (window.print())
+      const printBtn = document.getElementById('btnPrintDoc');
+      if (printBtn) {
+        printBtn.onclick = function () {
+          const prev = creatorZoomLevel;
+          creatorZoomLevel = 1.0;
+          applyCreatorZoom();
+          window.print();
+          setTimeout(() => {
+            creatorZoomLevel = prev;
+            applyCreatorZoom();
+          }, 500);
+        };
+      }
+
+      // 5. Download PDF via html2pdf.js
+      const pdfBtn = document.getElementById('btnDownloadPdf');
+      if (pdfBtn) {
+        pdfBtn.onclick = function () {
+          const btn = this;
+          const origHtml = btn.innerHTML;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> তৈরি হচ্ছে...';
+          btn.disabled = true;
+
+          const prev = creatorZoomLevel;
+          creatorZoomLevel = 1.0;
+          applyCreatorZoom();
+
+          const element = document.getElementById('creatorA4Paper');
+          const title = currentActiveTemplate ? currentActiveTemplate.title.replace(/[^\w\u0980-\u09FF]+/g, '_') : 'document';
+
+          const opt = {
+            margin:       0,
+            filename:     `${title}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, logging: false },
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+          };
+
+          if (typeof html2pdf !== 'undefined') {
+            html2pdf().set(opt).from(element).save().then(() => {
+              btn.innerHTML = origHtml;
+              btn.disabled = false;
+              creatorZoomLevel = prev;
+              applyCreatorZoom();
+              alert('পিডিএফ সফলভাবে ডাউনলোড হয়েছে!');
+            }).catch(err => {
+              console.error("PDF error:", err);
+              btn.innerHTML = origHtml;
+              btn.disabled = false;
+              creatorZoomLevel = prev;
+              applyCreatorZoom();
+              alert('পিডিএফ তৈরিতে সমস্যা হয়েছে: ' + err);
+            });
+          } else {
+            alert('html2pdf লাইব্রেরি লোড হয়নি, দয়া করে ইন্টারনেট সংযোগ চেক করুন।');
+            btn.innerHTML = origHtml;
+            btn.disabled = false;
+            creatorZoomLevel = prev;
+            applyCreatorZoom();
+          }
+        };
+      }
+    }
+
+    /**
+     * Setup Row Action Buttons ("তৈরি করুন" and "প্রিভিউ দেখুন")
+     */
+    function setupRowActionButtons() {
+      // 1. Preview Button ("প্রিভিউ দেখুন")
+      document.querySelectorAll('.preview-doc-action-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const docId = this.getAttribute('data-id');
+          openDocumentPreview(docId);
+        });
+      });
+
+      // 2. Create Button ("তৈরি করুন")
+      document.querySelectorAll('.create-doc-action-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const docId = this.getAttribute('data-id');
+          openDocumentCreator(docId);
+        });
+      });
+    }
+  </script>
+
+  <!-- Custom JavaScript -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

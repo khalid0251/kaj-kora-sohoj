@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>কাজ করা সহজ - ড্যাশবোর্ড</title>
+
+  <!-- Google Fonts: Hind Siliguri (Bengali) & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- FontAwesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+  <style>
+    /* =========================================================================
+       CLEAN SQUIRCLE GRID DASHBOARD
+       ========================================================================= */
+    .dashboard-main-container {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 36px 36px 42px 36px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-section-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #64748b;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .section-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .dot-blue { background-color: #0284c7; }
+    .dot-purple { background-color: #7c3aed; }
+    .dot-green { background-color: #10b981; }
+    .dot-red { background-color: #ef4444; }
+
+    .dashboard-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px 24px;
+      align-items: flex-start;
+    }
+
+    .dashboard-divider {
+      border: 0;
+      border-top: 1px solid rgba(0, 0, 0, 0.08);
+      margin: 32px 0 24px 0;
+    }
+
+    /* Dashboard Item Card */
+    .dashboard-card-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 105px;
+      text-decoration: none !important;
+      color: #1f2937 !important;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .dashboard-card-item:hover {
+      text-decoration: none !important;
+      transform: translateY(-2px);
+    }
+
+    /* Squircle Icon Container: 80px x 80px, radius 25px */
+    .squircle-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: #ffffff;
+      font-size: 32px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.25s ease;
+    }
+
+    .dashboard-card-item:hover .squircle-icon {
+      transform: translateY(-4px) scale(1.06);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    /* Bengali Text Label Below Icon */
+    .item-label {
+      display: block;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #1f2937; /* Dark grey / black */
+      margin-top: 10px;
+      line-height: 1.35;
+      text-align: center;
+      word-break: break-word;
+      transition: color 0.18s ease;
+    }
+
+    .dashboard-card-item:hover .item-label {
+      color: #0284c7;
+    }
+
+    /* Badges ('নতুন' and 'হট') */
+    .item-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      line-height: 1.25;
+      white-space: nowrap;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+      border: 2px solid #ffffff;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .badge-green {
+      background: #10B981;
+      color: #ffffff;
+    }
+
+    .badge-hot {
+      background: #EF4444;
+      color: #ffffff;
+    }
+
+    /* Taka Symbol */
+    .taka-symbol {
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1;
+      display: block;
+    }
+
+    /* Solid Color Classes for Squircles */
+    .bg-dark-blue { background-color: #1E3A8A; }
+    .bg-bright-blue { background-color: #0284C7; }
+    .bg-bright-green { background-color: #16A34A; }
+    .bg-light-purple { background-color: #8B5CF6; }
+    .bg-yellow-orange { background-color: #F59E0B; }
+    .bg-red-pink { background-color: #E11D48; }
+
+    .bg-purple { background-color: #7C3AED; }
+    .bg-emerald { background-color: #10B981; }
+    .bg-purple-vibrant { background-color: #9333EA; }
+    .bg-green-dark { background-color: #15803D; }
+    .bg-green-teal { background-color: #0D9488; }
+    .bg-red { background-color: #DC2626; }
+    .bg-teal-cyan { background-color: #0891B2; }
+    .bg-teal { background-color: #06B6D4; }
+
+    .bg-blue-royal { background-color: #2563EB; }
+    .bg-pink-magenta { background-color: #DB2777; }
+    .bg-yellow-gold { background-color: #D97706; }
+    .bg-brown-orange { background-color: #C2410C; }
+    .bg-blue-action { background-color: #3B82F6; }
+
+    @media (max-width: 768px) {
+      .dashboard-main-container {
+        padding: 24px 18px;
+      }
+      .dashboard-row {
+        gap: 20px 14px;
+        justify-content: center;
+      }
+      .dashboard-card-item {
+        width: 95px;
+      }
+      .squircle-icon {
+        width: 70px;
+        height: 70px;
+        border-radius: 20px;
+        font-size: 28px;
+      }
+      .item-label {
+        font-size: 12.5px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Mobile Overlay -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-wrapper">
+    <!-- ==================== SIDEBAR (বামদিকের মেনুবার) ==================== -->
+    <aside class="sidebar" id="sidebar">
+      <!-- সাইডবার হেডার / রেসপনসিভ লোগো -->
+      <div class="sidebar-header">
+        <a href="/" class="brand-logo-card" title="কাজ করা সহজ - হোম">
+          <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="কাজ করা সহজ লোগো" class="sidebar-logo">
+        </a>
+      </div>
+
+      <!-- সাইডবার মেনু আইটেমসমূহ -->
+      <div class="sidebar-menu-wrapper">
+        <div class="menu-category-title">মূল মেনু</div>
+        <ul class="sidebar-nav">
+          <li>
+            <a href="{{ url_for('dashboard') }}" class="nav-link-custom active">
+              <i class="bi bi-grid-1x2-fill"></i>
+              <span>ড্যাশবোর্ড</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('photo_edit') }}" class="nav-link-custom">
+              <i class="bi bi-camera-fill"></i>
+              <span>ফটো এডিটিং</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-ui-checks"></i>
+              <span>অটো ফর্ম</span>
+            </a>
+          </li>
+          <li>
+            <a href="{{ url_for('manual_documents') }}" class="nav-link-custom">
+              <i class="bi bi-file-earmark-richtext"></i>
+              <span>ডকুমেন্ট মেকার</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-cloud-arrow-up"></i>
+              <span>ফাইল শেয়ার</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link-custom">
+              <i class="bi bi-gear"></i>
+              <span>সেটিংস</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- সাইডবার ফুটার -->
+      <div class="sidebar-footer">
+        <div class="step-indicator">
+          <div class="status-dot"></div>
+          <div class="step-info">
+            <small>সিস্টেম ভার্সন</small>
+            <span>স্মার্ট স্টুডিও ২.০</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT WRAPPER ==================== -->
+    <div class="main-wrapper">
+      <!-- টপ নেভিগেশন বার -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-toggle" id="sidebarToggle" aria-label="মেনু খুলুন">
+            <i class="bi bi-list"></i>
+          </button>
+          <div class="page-title-badge">
+            <i class="bi bi-grid-1x2-fill"></i>
+            <span>প্রধান পাতা / ড্যাশবোর্ড</span>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="system-status-pill">
+            <span></span>
+            সার্ভার চালু আছে
+          </div>
+
+          <div class="user-profile">
+            <div class="avatar-circle">ক</div>
+            <div class="user-meta d-none d-sm-block">
+              <span>ব্যবহারকারী</span>
+              <small>অ্যাডমিন প্যানেল</small>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- মূল কন্টেন্ট এরিয়া -->
+      <main class="content-body">
+        <div class="container-fluid p-0">
+          
+          <!-- ওয়েলকাম হিরো ব্যানার (Deep Teal Theme) -->
+          <div class="welcome-hero-card mb-4">
+            <div class="hero-tag">
+              <i class="bi bi-stars"></i> সংস্করণ ২.০
+            </div>
+            <h2 class="welcome-title">কাজ করা সহজ - অল-ইন-ওয়ান স্টুডিও ড্যাশবোর্ড</h2>
+            <p class="welcome-subtitle">
+              আপনার নিত্যদিনের স্টুডিও এডিটিং, অটো ফর্ম, কনভার্সন এবং হিসাব-নিকাশের সমস্ত টুল এখন এক ঠিকানায়।
+            </p>
+            <div class="hero-highlights">
+              <div class="highlight-badge">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>স্মার্ট এআই স্টুডিও সক্রিয়</span>
+              </div>
+              <div class="highlight-badge">
+                <i class="bi bi-lightning-charge-fill"></i>
+                <span>দ্রুত সেবা ও ওয়ান-ক্লিক টুলস</span>
+              </div>
+              <div class="highlight-badge">
+                <i class="bi bi-shield-check"></i>
+                <span>নিরাপদ ও নির্ভরযোগ্য</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ========================================================
+               CENTRAL WHITE DASHBOARD CONTAINER WITH SQUIRCLE GRID
+               ======================================================== -->
+          <div class="dashboard-main-container">
+
+            <!-- ==================== ROW 1 (MAIN TOOLS) ==================== -->
+            <div class="dashboard-section-title">
+              <span class="section-dot dot-blue"></span> মূল টুলস (Main Tools)
+            </div>
+            <div class="dashboard-row">
+              <!-- 1. এআই ফটো এডিট -->
+              <a href="{{ url_for('photo_edit') }}" class="dashboard-card-item" title="এআই দিয়ে স্বয়ংক্রিয় ব্যাকগ্রাউন্ড রিমুভ ও ফটো এডিট">
+                <div class="squircle-icon bg-dark-blue">
+                  <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <span class="item-label">এআই ফটো এডিট</span>
+              </a>
+
+              <!-- 2. ম্যানুয়াল ফটো এডিট -->
+              <a href="{{ url_for('photo_edit') }}" class="dashboard-card-item" title="ম্যানুয়াল ক্রপিং ও ফাইন-টিউনিং এডিটর">
+                <div class="squircle-icon bg-bright-blue">
+                  <i class="fa-solid fa-pen-nib"></i>
+                </div>
+                <span class="item-label">ম্যানুয়াল ফটো এডিট</span>
+              </a>
+
+              <!-- 3. বাল্ক ফটো এডিট -->
+              <a href="#" class="dashboard-card-item" title="একাধিক ছবি একসাথে এডিট করুন">
+                <div class="squircle-icon bg-bright-green">
+                  <i class="fa-solid fa-images"></i>
+                </div>
+                <span class="item-label">বাল্ক ফটো এডিট</span>
+              </a>
+
+              <!-- 4. ডকুমেন্ট তৈরি -->
+              <a href="{{ url_for('manual_documents') }}" class="dashboard-card-item" title="সিভি, দরখাস্ত, দলিল ও প্রত্যয়নপত্র তৈরি করুন">
+                <div class="squircle-icon bg-light-purple">
+                  <i class="fa-solid fa-file-lines"></i>
+                </div>
+                <span class="item-label">ডকুমেন্ট তৈরি</span>
+              </a>
+
+              <!-- 5. চাকরির বিজ্ঞপ্তি -->
+              <a href="#" class="dashboard-card-item" title="সাম্প্রতিক চাকরির বিজ্ঞপ্তি ও সার্কুলার">
+                <div class="squircle-icon bg-yellow-orange">
+                  <i class="fa-solid fa-briefcase"></i>
+                </div>
+                <span class="item-label">চাকরির বিজ্ঞপ্তি</span>
+              </a>
+
+              <!-- 6. সহজটুলস -->
+              <a href="#" class="dashboard-card-item" title="দৈনন্দিন স্টুডিও টুলস বক্স">
+                <div class="squircle-icon bg-red-pink">
+                  <i class="fa-solid fa-toolbox"></i>
+                </div>
+                <span class="item-label">সহজটুলস</span>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            <hr class="dashboard-divider">
+
+            <!-- ==================== ROW 2 (UTILITIES) ==================== -->
+            <div class="dashboard-section-title">
+              <span class="section-dot dot-purple"></span> ইউটিলিটি ও ফাইল সার্ভিস (Utilities)
+            </div>
+            <div class="dashboard-row">
+              <!-- 1. ফর্ম অটো ফিলআপ (Badge: নতুন) -->
+              <a href="#" class="dashboard-card-item" title="স্বয়ংক্রিয় ফর্ম ফিলআপ">
+                <div class="squircle-icon bg-purple">
+                  <i class="fa-solid fa-clipboard-check"></i>
+                  <span class="item-badge badge-green">নতুন</span>
+                </div>
+                <span class="item-label">ফর্ম অটো ফিলআপ</span>
+              </a>
+
+              <!-- 2. ইমেজ কম্প্রেস -->
+              <a href="#" class="dashboard-card-item" title="ছবির সাইজ ছোট করুন">
+                <div class="squircle-icon bg-emerald">
+                  <i class="fa-solid fa-file-image"></i>
+                </div>
+                <span class="item-label">ইমেজ কম্প্রেস</span>
+              </a>
+
+              <!-- 3. ইমেজ কনভার্ট (Badge: হট) -->
+              <a href="#" class="dashboard-card-item" title="জেপিজি, পিএনজি ও ওয়েবপি কনভার্টার">
+                <div class="squircle-icon bg-purple-vibrant">
+                  <i class="fa-solid fa-right-left"></i>
+                  <span class="item-badge badge-hot">হট</span>
+                </div>
+                <span class="item-label">ইমেজ কনভার্ট</span>
+              </a>
+
+              <!-- 4. এনআইডি টু পিডিএফ (Badge: হট) -->
+              <a href="#" class="dashboard-card-item" title="জাতীয় পরিচয়পত্র উভয় পিঠ পিডিএফ এ সাজান">
+                <div class="squircle-icon bg-green-dark">
+                  <i class="fa-solid fa-id-card"></i>
+                  <span class="item-badge badge-hot">হট</span>
+                </div>
+                <span class="item-label">এনআইডি টু পিডিএফ</span>
+              </a>
+
+              <!-- 5. পাসপোর্ট টু পিডিএফ -->
+              <a href="#" class="dashboard-card-item" title="পাসপোর্ট স্ক্যান কপিকে পিডিএফে রূপান্তর">
+                <div class="squircle-icon bg-green-teal">
+                  <i class="fa-solid fa-passport"></i>
+                </div>
+                <span class="item-label">পাসপোর্ট টু পিডিএফ</span>
+              </a>
+
+              <!-- 6. পিডিএফ এডিট (Badge: নতুন) -->
+              <a href="#" class="dashboard-card-item" title="পিডিএফ ফাইল সম্পাদনা করুন">
+                <div class="squircle-icon bg-red">
+                  <i class="fa-solid fa-file-pen"></i>
+                  <span class="item-badge badge-green">নতুন</span>
+                </div>
+                <span class="item-label">পিডিএফ এডিট</span>
+              </a>
+
+              <!-- 7. ছবি থেকে লেখা (Badge: নতুন) -->
+              <a href="#" class="dashboard-card-item" title="ছবির টেক্সট ওসিআর স্ক্যানার">
+                <div class="squircle-icon bg-teal-cyan">
+                  <i class="fa-solid fa-camera-rotate"></i>
+                  <span class="item-badge badge-green">নতুন</span>
+                </div>
+                <span class="item-label">ছবি থেকে লেখা</span>
+              </a>
+
+              <!-- 8. ডকুমেন্ট ক্লিনআপ (Badge: নতুন) -->
+              <a href="#" class="dashboard-card-item" title="ঝাপসা বা কালো দাগ পরিষ্কার করুন">
+                <div class="squircle-icon bg-teal">
+                  <i class="fa-solid fa-wand-magic"></i>
+                  <span class="item-badge badge-green">নতুন</span>
+                </div>
+                <span class="item-label">ডকুমেন্ট ক্লিনআপ</span>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            <hr class="dashboard-divider">
+
+            <!-- ==================== ROW 3 (FINANCE & MANAGEMENT) ==================== -->
+            <div class="dashboard-section-title">
+              <span class="section-dot dot-green"></span> হিসাব ও ব্যবস্থাপনা (Finance & Management)
+            </div>
+            <div class="dashboard-row">
+              <!-- 1. ইনভয়েস -->
+              <a href="#" class="dashboard-card-item" title="কাস্টমার বিল ও ইনভয়েস জেনারেট">
+                <div class="squircle-icon bg-purple">
+                  <i class="fa-solid fa-receipt"></i>
+                </div>
+                <span class="item-label">ইনভয়েস</span>
+              </a>
+
+              <!-- 2. আয় ব্যয় হিসাব -->
+              <a href="#" class="dashboard-card-item" title="দোকানের আয়-ব্যয়ের হিসাব রাখুন">
+                <div class="squircle-icon bg-blue-royal">
+                  <span class="taka-symbol">৳</span>
+                </div>
+                <span class="item-label">আয় ব্যয় হিসাব</span>
+              </a>
+
+              <!-- 3. দেনা পাওনা -->
+              <a href="#" class="dashboard-card-item" title="গ্রাহক ও মহাজনের বাকি খাতা">
+                <div class="squircle-icon bg-pink-magenta">
+                  <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                </div>
+                <span class="item-label">দেনা পাওনা</span>
+              </a>
+
+              <!-- 4. আয় ব্যয় তালিকা -->
+              <a href="#" class="dashboard-card-item" title="মাসিক ও বাৎসরিক হিসাব রিপোর্ট">
+                <div class="squircle-icon bg-yellow-gold">
+                  <i class="fa-solid fa-table-list"></i>
+                </div>
+                <span class="item-label">আয় ব্যয় তালিকা</span>
+              </a>
+
+              <!-- 5. গ্রাহক -->
+              <a href="#" class="dashboard-card-item" title="গ্রাহকদের তালিকা ও যোগাযোগ">
+                <div class="squircle-icon bg-red-pink">
+                  <i class="fa-solid fa-users"></i>
+                </div>
+                <span class="item-label">গ্রাহক</span>
+              </a>
+
+              <!-- 6. ফটো এডিট সেটিংস -->
+              <a href="#" class="dashboard-card-item" title="প্রিসেট ও রেজোলিউশন কনফিগারেশন">
+                <div class="squircle-icon bg-light-purple">
+                  <i class="fa-solid fa-sliders"></i>
+                </div>
+                <span class="item-label">ফটো এডিট সেটিংস</span>
+              </a>
+
+              <!-- 7. দরকারি লিংক (Badge: নতুন) -->
+              <a href="#" class="dashboard-card-item" title="গুরুত্বপূর্ণ সরকারি ও শিক্ষাগত পোর্টাল">
+                <div class="squircle-icon bg-brown-orange">
+                  <i class="fa-solid fa-building-columns"></i>
+                  <span class="item-badge badge-green">নতুন</span>
+                </div>
+                <span class="item-label">দরকারি লিংক</span>
+              </a>
+
+              <!-- 8. সেটিংস -->
+              <a href="#" class="dashboard-card-item" title="অ্যাপ্লিকেশন ও প্রিন্টার সেটিংস">
+                <div class="squircle-icon bg-blue-action">
+                  <i class="fa-solid fa-gear"></i>
+                </div>
+                <span class="item-label">সেটিংস</span>
+              </a>
+            </div>
+
+            <!-- Divider -->
+            <hr class="dashboard-divider">
+
+            <!-- ==================== ROW 4 (MISC) ==================== -->
+            <div class="dashboard-section-title">
+              <span class="section-dot dot-red"></span> বিবিধ (Misc)
+            </div>
+            <div class="dashboard-row">
+              <!-- 1. কোম্পানি প্রোফাইল -->
+              <a href="#" class="dashboard-card-item" title="স্টুডিও প্রোফাইল ও পরিচিতি">
+                <div class="squircle-icon bg-red">
+                  <i class="fa-solid fa-building"></i>
+                </div>
+                <span class="item-label">কোম্পানি প্রোফাইল</span>
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+
+      <!-- পেজ ফুটার -->
+      <footer class="app-footer">
+        <div>&copy; 2026 <strong>কাজ করা সহজ</strong> - সকল অধিকার সংরক্ষিত।</div>
+        <div>ব্র্যান্ড থিম: ডিপ টিল (Deep Teal)</div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Bootstrap 5 Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JavaScript -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
